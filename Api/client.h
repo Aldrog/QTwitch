@@ -4,6 +4,7 @@
 #include "qtwitch_global.h"
 #include <QObject>
 #include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <memory>
 
 #include "request.h"
@@ -19,10 +20,13 @@ public:
     explicit Client(QObject *parent = nullptr);
 
 public slots:
-    void send(const Request &request);
+    void send(const std::shared_ptr<QTwitch::Api::Request> &request);
 
 signals:
-    void receive(Response &response);
+    void receive(std::shared_ptr<QTwitch::Api::Response> response);
+
+    void error(QNetworkReply::NetworkError e);
+    void sslErrors(QList<QSslError> e);
 
 private:
     std::unique_ptr<QNetworkAccessManager> network;

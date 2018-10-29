@@ -19,12 +19,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    client.cpp
+    client.cpp \
+    request.cpp \
+    jsonsetter.cpp
 
 HEADERS += \
+    client.h \
     request.h \
     response.h \
-    client.h
+    Helix/endpoints.h \
+    Helix/data.h \
+    jsonsetter.h
 
 unix {
     target.path = /usr/lib
