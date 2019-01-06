@@ -52,9 +52,9 @@ inline QDebug operator<<(QDebug debug, std::string str)
 void ApiTest::testCaseTopGames()
 {
     auto request = std::make_shared<Helix::TopGamesRequest>();
+    request->first = 24;
 
-    qDebug() << "Top games options:" << request->options();
-    qDebug() << "Top games url:" << request->getFullUrl({ {"first", "24"} });
+    qDebug() << "Top games url:" << request->getFullUrl();
 
     QSignalSpy receiveWatcher(client.get(), &Client::receive);
     QSignalSpy errorWatcher(client.get(), &Client::error);

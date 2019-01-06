@@ -1,4 +1,4 @@
-CONFIG += c++14
+CONFIG += c++17
 VERSION = 0.1
 
 INCLUDEPATH += $$PWD

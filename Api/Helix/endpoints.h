@@ -4,26 +4,59 @@
 #include "request.h"
 #include "data.h"
 #include "jsonsetter.h"
+#include <QJsonDocument>
+#include <QUrlQuery>
+#include <QtDebug>
 
 namespace QTwitch {
 namespace Api {
 namespace Helix {
 
-struct Request : public QTwitch::Api::Request
+class Request : public QTwitch::Api::Request
 {
-    const std::string baseUrl() const final { return "https://api.twitch.tv/helix/"; }
+public:
+    QString baseUrl() const final { return QStringLiteral("https://api.twitch.tv/helix/"); }
 };
 
-struct QTWITCHSHARED_EXPORT TopGamesRequest : public Request
+class PagedRequest : public Request
 {
-    const std::string endpoint() const final { return "games/top"; }
-    const std::vector<std::string> options() const final { return { "after", "before", "first" }; }
+public:
+    std::optional<QString> after;
+    std::optional<QString> before;
+    std::optional<int> first;
 
-    std::unique_ptr<Object> createResponseObject(const QJsonObject &object) const final
+    QUrl getFullUrl() const override
+    {
+        if (after && before)
+            qWarning() << "Both after and before paging parameters are set.\n"
+                          "Please check your usage of the API.";
+        if (first && (*first <= 0 || *first > 100))
+            qWarning() << "Paging parameter \"first\" should be more than zero and not more than 100.\n"
+                          "Please check your usage of the API.";
+
+        auto url = QTwitch::Api::Request::getFullUrl();
+        QUrlQuery query(url);
+        if (after)
+            query.addQueryItem(QStringLiteral("after"), *after);
+        if (before)
+            query.addQueryItem(QStringLiteral("before"), *before);
+        if (first)
+            query.addQueryItem(QStringLiteral("first"), QString::number(*first));
+        url.setQuery(query);
+        return url;
+    }
+};
+
+class QTWITCHSHARED_EXPORT TopGamesRequest : public PagedRequest
+{
+public:
+    QString endpoint() const final { return QStringLiteral("games/top"); }
+
+    std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final
     {
         typedef TopGames ObjectType;
         auto result = std::make_unique<ObjectType>();
-        JsonSetter visitor(object);
+        JsonSetter visitor(QJsonDocument::fromJson(data).object());
         result->accept(visitor);
         return result;
     }
