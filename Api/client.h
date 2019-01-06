@@ -23,10 +23,10 @@ public slots:
     void send(const std::shared_ptr<QTwitch::Api::Request> &request);
 
 signals:
-    void receive(std::shared_ptr<QTwitch::Api::Response> response);
+    void receive(const std::shared_ptr<QTwitch::Api::Response> &response);
 
     void error(QNetworkReply::NetworkError e);
-    void sslErrors(QList<QSslError> e);
+    void sslErrors(QNetworkReply *reply, const QList<QSslError> &e);
 
 private:
     std::unique_ptr<QNetworkAccessManager> network;

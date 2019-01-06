@@ -9,6 +9,7 @@ Client::Client(QObject *parent) :
     QObject(parent),
     network(std::make_unique<QNetworkAccessManager>())
 {
+    connect(network.get(), &QNetworkAccessManager::sslErrors, this, &Client::sslErrors);
 }
 
 void Client::send(const std::shared_ptr<Request> &request)
@@ -23,8 +24,9 @@ void Client::send(const std::shared_ptr<Request> &request)
         response->object = std::move(responseObject);
         response->request = request;
         emit receive(response);
+        emit request->responseReceived(response);
         qrep->deleteLater();
     });
     connect(qrep, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), this, &Client::error);
-    connect(qrep, &QNetworkReply::sslErrors, this, &Client::sslErrors);
+    connect(qrep, QOverload<QNetworkReply::NetworkError>::of(&QNetworkReply::error), request.get(), &Request::error);
 }

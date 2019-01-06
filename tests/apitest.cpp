@@ -56,8 +56,8 @@ void ApiTest::testCaseTopGames()
 
     qDebug() << "Top games url:" << request->getFullUrl();
 
-    QSignalSpy receiveWatcher(client.get(), &Client::receive);
-    QSignalSpy errorWatcher(client.get(), &Client::error);
+    QSignalSpy receiveWatcher(request.get(), &Request::responseReceived);
+    QSignalSpy errorWatcher(request.get(), &Request::error);
     QSignalSpy sslErrorWatcher(client.get(), &Client::sslErrors);
 
     client->send(request);
