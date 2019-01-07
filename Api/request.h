@@ -8,7 +8,7 @@ namespace QTwitch {
 namespace Api {
 
 class Object;
-class Response;
+struct Response;
 
 class QTWITCHSHARED_EXPORT Request : public QObject
 {
@@ -27,8 +27,8 @@ signals:
 
 protected:
     virtual QUrlQuery getQuery() const;
-    void addParam(QUrlQuery &query, const QString &key, const QString &value) const;
-    void addParam(QUrlQuery &query, const QString &key, int value) const;
+    void addParam(QUrlQuery &query, const QString &key, const std::optional<QString> &value) const;
+    void addParam(QUrlQuery &query, const QString &key, const std::optional<int> &value) const;
     void addParam(QUrlQuery &query, const QString &key, const std::vector<QString> &value) const;
     void addParam(QUrlQuery &query, const QString &key, const std::vector<int> &value) const;
 

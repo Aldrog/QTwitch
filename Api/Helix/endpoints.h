@@ -33,11 +33,13 @@ protected:
 class QTWITCHSHARED_EXPORT GamesRequest : public Request
 {
     typedef Request Base;
+    typedef GamesList ResponseObjectType;
 public:
     std::vector<int> id;
     std::vector<QString> name;
 
     QString endpoint() const final { return QStringLiteral("games"); }
+
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 
 protected:
@@ -46,9 +48,80 @@ protected:
 
 class QTWITCHSHARED_EXPORT TopGamesRequest : public PagedRequest
 {
+    typedef PagedRequest Base;
+    typedef GamesList ResponseObjectType;
 public:
     QString endpoint() const final { return QStringLiteral("games/top"); }
+
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
+};
+
+class QTWITCHSHARED_EXPORT StreamsRequest : public PagedRequest
+{
+    typedef PagedRequest Base;
+    typedef StreamsList ResponseObjectType;
+public:
+    std::vector<QString> communityId;
+    std::vector<QString> gameId;
+    std::vector<QString> language;
+    std::vector<QString> userId;
+    std::vector<QString> userLogin;
+
+    QString endpoint() const final { return QStringLiteral("streams"); }
+
+    std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
+
+protected:
+    QUrlQuery getQuery() const override;
+};
+
+// TODO: According to docs this request doesn't allow backward navigation
+class QTWITCHSHARED_EXPORT UserFollowsRequest : public PagedRequest
+{
+    typedef PagedRequest Base;
+    typedef FollowsList ResponseObjectType;
+public:
+    std::optional<QString> fromId;
+    std::optional<QString> toId;
+
+    QString endpoint() const final { return QStringLiteral("users/follows"); }
+
+    std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
+
+protected:
+    QUrlQuery getQuery() const override;
+};
+
+class QTWITCHSHARED_EXPORT VideosRequest : public PagedRequest
+{
+    typedef PagedRequest Base;
+    typedef VideosList ResponseObjectType;
+public:
+    std::vector<QString> id;
+    std::optional<QString> userId;
+    std::optional<QString> gameId;
+    std::optional<QString> language;
+
+    enum class Period {
+        All, Day, Week, Month
+    };
+    enum class Sorting {
+        Time, Trending, Views
+    };
+    enum class Type {
+        All, Upload, Archive, Highlight
+    };
+
+    std::optional<Period> period;
+    std::optional<Sorting> sort;
+    std::optional<Type> type;
+
+    QString endpoint() const final { return QStringLiteral("videos"); }
+
+    std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
+
+protected:
+    QUrlQuery getQuery() const override;
 };
 
 }

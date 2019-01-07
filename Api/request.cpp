@@ -20,18 +20,24 @@ QUrl Request::getFullUrl() const
     return url;
 }
 
-void Request::addParam(QUrlQuery &query, const QString &key, const QString &value) const
+void Request::addParam(QUrlQuery &query, const QString &key, const std::optional<QString> &value) const
 {
-    query.addQueryItem(key, value);
+    if (!value)
+        return;
+    query.addQueryItem(key, *value);
 }
 
-void Request::addParam(QUrlQuery &query, const QString &key, int value) const
+void Request::addParam(QUrlQuery &query, const QString &key, const std::optional<int> &value) const
 {
-    query.addQueryItem(key, QString::number(value));
+    if (!value)
+        return;
+    query.addQueryItem(key, QString::number(*value));
 }
 
 void Request::addParam(QUrlQuery &query, const QString &key, const std::vector<QString> &value) const
 {
+    if (value.empty())
+        return;
     auto it = value.begin();
     QString valString = *it;
     for (++it; it != value.end(); ++it)
@@ -41,6 +47,8 @@ void Request::addParam(QUrlQuery &query, const QString &key, const std::vector<Q
 
 void Request::addParam(QUrlQuery &query, const QString &key, const std::vector<int> &value) const
 {
+    if (value.empty())
+        return;
     auto it = value.begin();
     QString valString = QString::number(*it);
     for (++it; it != value.end(); ++it)

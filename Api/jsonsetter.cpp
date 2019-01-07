@@ -1,5 +1,7 @@
 #include "jsonsetter.h"
 
+using namespace QTwitch::Api;
+
 JsonSetter::JsonSetter(const QJsonObject &input)
     : json(input)
 {

@@ -5,6 +5,25 @@
 #include <QJsonObject>
 #include <QJsonArray>
 
+namespace QTwitch {
+namespace Api {
+
+template<typename C, typename Arg>
+struct supportsVisitors
+{
+private:
+    template<typename T>
+    static constexpr auto check(T *x) -> decltype(x->accept(std::declval<Arg>()), std::true_type{});
+
+    template<typename>
+    static constexpr auto check(...) -> std::false_type;
+
+    typedef decltype(check<C>(0)) type;
+
+public:
+    static constexpr bool value = type::value;
+};
+
 class JsonSetter
 {
 public:
@@ -13,7 +32,6 @@ public:
     template<class T>
     void visit(T &object, const std::string &key) const
     {
-//        auto sub = JsonSetter(json[QString::fromStdString(key)].toObject());
         object.accept(JsonSetter(json[QString::fromStdString(key)].toObject()));
     }
 
@@ -24,7 +42,10 @@ public:
         for (auto it : jsonArray)
         {
             T el;
-            el.accept(JsonSetter(it.toObject()));
+            if constexpr (supportsVisitors<T, JsonSetter>::value)
+                el.accept(JsonSetter(it.toObject()));
+            else
+                set(el, it);
             object.push_back(std::move(el));
         }
     }
@@ -35,6 +56,14 @@ public:
     void visit(bool &value, const std::string &key) const;
 private:
     QJsonObject json;
+
+    inline void set(std::string &value, const QJsonValueRef &it) const { value = it.toString().toStdString(); }
+    inline void set(int &value, const QJsonValueRef &it) const { value = it.toInt(); }
+    inline void set(double &value, const QJsonValueRef &it) const { value = it.toDouble(); }
+    inline void set(bool &value, const QJsonValueRef &it) const { value = it.toBool(); }
 };
+
+}
+}
 
 #endif // JSONSETTER_H
