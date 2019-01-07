@@ -67,7 +67,7 @@ QUrlQuery VideosRequest::getQuery() const
     QUrlQuery query = Base::getQuery();
     addParam(query, QStringLiteral("id"), id);
     addParam(query, QStringLiteral("user_id"), userId);
-    addParam(query, QStringLiteral("igame_id"), gameId);
+    addParam(query, QStringLiteral("game_id"), gameId);
     addParam(query, QStringLiteral("language"), language);
 
     if (period) {

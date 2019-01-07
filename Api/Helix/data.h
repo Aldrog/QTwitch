@@ -199,7 +199,7 @@ class QTWITCHSHARED_EXPORT VideoData : public Object
 public:
     std::string id;
     std::string userId;
-    std::string name;
+    std::string userName;
     std::string title;
     std::string description;
     std::string createdAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
@@ -207,12 +207,12 @@ public:
     std::string url;
     std::string thumbnailUrl;
     enum class Viewable {
-        Public, Private
+        Public, Private, Unknown
     } viewable;
     int viewCount;
     std::string language;
     enum class Type {
-        Upload, Archive, Highlight
+        Upload, Archive, Highlight, Unknown
     } type;
     std::string duration;
 
@@ -221,7 +221,7 @@ public:
     {
         visitor.visit(id, "id");
         visitor.visit(userId, "user_id");
-        visitor.visit(name, "name");
+        visitor.visit(userName, "user_name");
         visitor.visit(title, "title");
         visitor.visit(description, "description");
         visitor.visit(createdAt, "created_at");
@@ -250,7 +250,8 @@ private:
             return Viewable::Public;
         if (value == "private")
             return Viewable::Private;
-        throw std::runtime_error("Invalid viewable value");
+        qWarning() << "Unexpected video viewable field";
+        return Viewable::Unknown;
     }
     Type typeFromString(const std::string &value) const
     {
@@ -260,7 +261,8 @@ private:
             return Type::Archive;
         if (value == "highlight")
             return Type::Highlight;
-        throw std::runtime_error("Invalid type value");
+        qWarning() << "Unexpected video type field";
+        return Type::Unknown;
     }
 };
 
