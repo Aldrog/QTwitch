@@ -27,6 +27,8 @@ private slots:
     void testCaseGames();
     void testCaseUser();
     void testCaseUserFollows();
+    void testCaseStreams();
+    void testCaseVideos();
 
     void cleanupTestCase();
 
@@ -139,6 +141,37 @@ void ApiTest::testCaseUserFollows()
                  shared_ptr<Object>(move(response->object)) );
     QVERIFY(follows);
     qDebug() << "User follows" << follows->data[0].toName << "since" << follows->data[0].followedAt;
+}
+
+void ApiTest::testCaseStreams()
+{
+    auto request = std::make_shared<Helix::StreamsRequest>();
+    request->first = 24;
+
+    qDebug() << "Streams url:" << request->getFullUrl();
+
+    auto response = sendRequest(request);
+    auto streams = dynamic_pointer_cast<Helix::StreamsList> (
+                 shared_ptr<Object>(move(response->object)) );
+    QVERIFY(streams);
+    qDebug() << "Most popular stream is" << streams->data[0].title << "by" << streams->data[0].userName;
+}
+
+void ApiTest::testCaseVideos()
+{
+    auto request = std::make_shared<Helix::VideosRequest>();
+    request->gameId = "68028";
+    request->first = 24;
+    request->sort = Helix::VideosRequest::Sorting::Trending;
+
+    qDebug() << "Videos url:" << request->getFullUrl();
+
+    auto response = sendRequest(request);
+    auto videos = dynamic_pointer_cast<Helix::VideosList> (
+                 shared_ptr<Object>(move(response->object)) );
+    QVERIFY(videos);
+    qDebug() << "Video by" << videos->data[0].userName << "titled" << videos->data[0].title
+             << "was published at" << videos->data[0].publishedAt << "and got" << videos->data[0].viewCount << "views.";
 }
 
 QTEST_MAIN(ApiTest)
