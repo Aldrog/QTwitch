@@ -24,12 +24,6 @@ QUrlQuery GamesRequest::getQuery() const
     if (id.empty() && name.empty())
         qWarning() << "Neither id nor name are specified.\n"
                       "Please check your usage of the API.";
-    if (id.size() > 100)
-        qWarning() << "More than 100 ids specified.\n"
-                      "Please check your usage of the API.";
-    if (name.size() > 100)
-        qWarning() << "More than 100 names specified.\n"
-                      "Please check your usage of the API.";
 
     QUrlQuery query = Base::getQuery();
     addParam(query, QStringLiteral("id"), id);
