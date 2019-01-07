@@ -11,4 +11,8 @@ isEmpty( TWITCH_CLIENT_ID ): {
     DEFINES += TWITCH_CLIENT_ID=\"\\\"$$TWITCH_CLIENT_ID\\\"\"
 }
 
+debug {
+    QMAKE_CXXFLAGS += -Werror
+}
+
 DEFINES += QTWITCH_VERSION=\"\\\"$$VERSION\\\"\"
