@@ -30,7 +30,7 @@ protected:
     QUrlQuery getQuery() const override;
 };
 
-class QTWITCHSHARED_EXPORT GamesRequest : public Request
+class QTWITCHSHARED_EXPORT GamesRequest final : public Request
 {
     typedef Request Base;
     typedef GamesList ResponseObjectType;
@@ -43,10 +43,10 @@ public:
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 
 protected:
-    QUrlQuery getQuery() const override;
+    QUrlQuery getQuery() const final;
 };
 
-class QTWITCHSHARED_EXPORT TopGamesRequest : public PagedRequest
+class QTWITCHSHARED_EXPORT TopGamesRequest final : public PagedRequest
 {
     typedef PagedRequest Base;
     typedef GamesList ResponseObjectType;
@@ -56,7 +56,7 @@ public:
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 };
 
-class QTWITCHSHARED_EXPORT StreamsRequest : public PagedRequest
+class QTWITCHSHARED_EXPORT StreamsRequest final : public PagedRequest
 {
     typedef PagedRequest Base;
     typedef StreamsList ResponseObjectType;
@@ -72,11 +72,11 @@ public:
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 
 protected:
-    QUrlQuery getQuery() const override;
+    QUrlQuery getQuery() const final;
 };
 
 // TODO: According to docs this request doesn't allow backward navigation
-class QTWITCHSHARED_EXPORT UserFollowsRequest : public PagedRequest
+class QTWITCHSHARED_EXPORT UserFollowsRequest final : public PagedRequest
 {
     typedef PagedRequest Base;
     typedef FollowsList ResponseObjectType;
@@ -89,10 +89,10 @@ public:
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 
 protected:
-    QUrlQuery getQuery() const override;
+    QUrlQuery getQuery() const final;
 };
 
-class QTWITCHSHARED_EXPORT VideosRequest : public PagedRequest
+class QTWITCHSHARED_EXPORT VideosRequest final : public PagedRequest
 {
     typedef PagedRequest Base;
     typedef VideosList ResponseObjectType;
@@ -121,7 +121,7 @@ public:
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 
 protected:
-    QUrlQuery getQuery() const override;
+    QUrlQuery getQuery() const final;
 };
 
 }
