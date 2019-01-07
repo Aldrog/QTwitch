@@ -1,0 +1,55 @@
+# QTwitch
+This library is intended to make development of Twitch-powered applications for any platform as easy as possible.
+Although it's primarily designed to simplify [TwitchTube](https://github.com/Aldrog/TwitchTube) and to make it's porting to other platforms easier, you will probably find QTwitch useful for various other applications from a chat bot or statistics collector to embedding a stream player into an app.
+
+## Dependencies
+* Qt 5
+* C++14-capable compiler
+
+## Build
+Twitch requires a Client-ID for all requests so before being able to use QTwitch you'll have to register your app on [developer's dashboard](https://dev.twitch.tv/), get it's Client-ID and set it to TWITCH_CLIENT_ID environment variable, e.g.:
+```bash
+export TWITCH_CLIENT_ID=your-client-id
+```
+Then, you should be able to build the root project QTwitch.pro, e.g.:
+```bash
+qmake QTwitch.pro
+make
+```
+This will generate a shared library for each module.  
+Unfortunately, there're no installation rules nor any qmake or CMake helpers at the moment.
+
+## Documentation
+As the library matures, it's going to get a complete doxygen-like documentation. For now, there's only a sketch of it's general structure.
+
+## Modules
+The library consists of the following modules:
+
+### Api
+This module includes a basic framework for sending requests to Twitch APIs as well as descriptions for API endpoints.
+Here, plain C++ is prefered over Qt, yet Qt is being used for asynchronous cross-platform networking and JSON parsing.
+
+All classes in the Api module are defined inside QTwitch::Api namespace.
+
+**Status**: basic functions of the framework are implemented, but require some minor architectural changes for consistency and flexibility. The module lacks endpoint descriptions and more advanced error checking.
+
+### Models
+This module will include models for visual representation of various data provided by Twitch.
+The models will be QAbstractListModel-inherited classes thus usable by both QtQuick and QWidgets, wrapping *Api* functionality.
+
+**Status**: High priority in TODO list.
+
+### Chat
+This module will include an implementation of IRC with support for Twitch extensions as well as a model for visual representation of the chat (Note: the latter might actually better suit `Models` module).
+
+**Status**: High priority in TODO list.
+
+### Player
+Embeddable GStreamer-based stream/vod player.
+
+**Status**: Low priority in TODO list.
+
+### tests
+Contains tests for functionality of each module.
+
+**Status**: Has basic functional tests for all implemented higher-level functionality. All tests pass successfully.
