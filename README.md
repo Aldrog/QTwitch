@@ -4,7 +4,7 @@ Although it's primarily designed to simplify [TwitchTube](https://github.com/Ald
 
 ## Dependencies
 * Qt 5
-* C++14-capable compiler
+* C++17-capable compiler
 
 ## Build
 Twitch requires a Client-ID for all requests so before being able to use QTwitch you'll have to register your app on [developer's dashboard](https://dev.twitch.tv/), get it's Client-ID and set it to TWITCH_CLIENT_ID environment variable, e.g.:
@@ -27,11 +27,10 @@ The library consists of the following modules:
 
 ### Api
 This module includes a basic framework for sending requests to Twitch APIs as well as descriptions for API endpoints.
-Here, plain C++ is prefered over Qt, yet Qt is being used for asynchronous cross-platform networking and JSON parsing.
 
 All classes in the Api module are defined inside QTwitch::Api namespace.
 
-**Status**: basic functions of the framework are implemented, but require some minor architectural changes for consistency and flexibility. The module lacks endpoint descriptions and more advanced error checking.
+**Status**: basic functions of the framework are implemented. The module lacks endpoint descriptions and more advanced error checking.
 
 ### Models
 This module will include models for visual representation of various data provided by Twitch.
