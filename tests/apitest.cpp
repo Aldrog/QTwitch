@@ -6,6 +6,12 @@
 using namespace QTwitch::Api;
 using namespace std;
 
+#define QVERIFY_EXCEPTION(statement) \
+do {\
+    if (!QTest::qVerify(static_cast<bool>(statement), #statement, "", __FILE__, __LINE__))\
+        throw std::runtime_error("QVERIFY failed");\
+} while (false)
+
 class ApiTest : public QObject
 {
     Q_OBJECT
@@ -18,11 +24,37 @@ private slots:
 
     void testCaseSetupInfo();
     void testCaseTopGames();
+    void testCaseGames();
+    void testCaseUser();
+    void testCaseUserFollows();
 
     void cleanupTestCase();
 
 protected:
     unique_ptr<Client> client = make_unique<Client>();
+    QString userId;
+
+    std::shared_ptr<Response> sendRequest(const std::shared_ptr<Request> &request)
+    {
+        QSignalSpy receiveWatcher(request.get(), &Request::responseReceived);
+        QSignalSpy errorWatcher(request.get(), &Request::error);
+        QSignalSpy sslErrorWatcher(client.get(), &Client::sslErrors);
+
+        client->send(request);
+
+        receiveWatcher.wait();
+        if (!errorWatcher.isEmpty())
+            qDebug() << "Network error:" << errorWatcher.first();
+        if (!sslErrorWatcher.isEmpty())
+            qDebug() << "SSL errors:" << sslErrorWatcher.first();
+
+        QVERIFY_EXCEPTION(errorWatcher.isEmpty());
+        QVERIFY_EXCEPTION(sslErrorWatcher.isEmpty());
+        QVERIFY_EXCEPTION(!receiveWatcher.isEmpty());
+        auto response = receiveWatcher.first().first().value<shared_ptr<Response>>();
+        QVERIFY_EXCEPTION(response->request == request);
+        return response;
+    }
 };
 
 ApiTest::ApiTest()
@@ -44,7 +76,7 @@ void ApiTest::testCaseSetupInfo()
     qDebug() << "Library version:" << QTWITCH_VERSION;
 }
 
-inline QDebug operator<<(QDebug debug, std::string str)
+inline QDebug operator<<(QDebug debug, const std::string &str)
 {
     return debug << QString::fromStdString(str);
 }
@@ -56,27 +88,57 @@ void ApiTest::testCaseTopGames()
 
     qDebug() << "Top games url:" << request->getFullUrl();
 
-    QSignalSpy receiveWatcher(request.get(), &Request::responseReceived);
-    QSignalSpy errorWatcher(request.get(), &Request::error);
-    QSignalSpy sslErrorWatcher(client.get(), &Client::sslErrors);
-
-    client->send(request);
-
-    receiveWatcher.wait();
-    if (!errorWatcher.isEmpty())
-        qDebug() << "Network error:" << errorWatcher.first();
-    if (!sslErrorWatcher.isEmpty())
-        qDebug() << "SSL errors:" << sslErrorWatcher.first();
-
-    QVERIFY(errorWatcher.isEmpty());
-    QVERIFY(sslErrorWatcher.isEmpty());
-    QVERIFY(!receiveWatcher.isEmpty());
-    auto response = receiveWatcher.first().first().value<shared_ptr<Response>>();
-    QVERIFY(response->request == request);
+    auto response = sendRequest(request);
     auto games = dynamic_pointer_cast<Helix::GamesList> (
                  shared_ptr<Object>(move(response->object)) );
     QVERIFY(games);
     qDebug() << "The most popular game is" << games->data[0].name;
+}
+
+void ApiTest::testCaseGames()
+{
+    auto request = std::make_shared<Helix::GamesRequest>();
+    request->name = {"Dota 2", "Hollow Knight", "Pillars of Eternity"};
+
+    qDebug() << "Games url:" << request->getFullUrl();
+
+    auto response = sendRequest(request);
+    auto games = dynamic_pointer_cast<Helix::GamesList> (
+                 shared_ptr<Object>(move(response->object)) );
+    QVERIFY(games);
+    QVERIFY(games->data.size() == request->name.size() + request->id.size());
+    qDebug() << games->data[0].name << "ID is" << games->data[0].id;
+}
+
+void ApiTest::testCaseUser()
+{
+    auto request = std::make_shared<Helix::UsersRequest>();
+    request->login = {"aldrog"};
+
+    qDebug() << "Users url:" << request->getFullUrl();
+
+    auto response = sendRequest(request);
+    auto users = dynamic_pointer_cast<Helix::UsersList> (
+                 shared_ptr<Object>(move(response->object)) );
+    QVERIFY(users);
+    QVERIFY(users->data.size() == request->id.size() + request->login.size());
+    qDebug() << users->data[0].displayName << "ID is" << users->data[0].id;
+    userId = QString::fromStdString(users->data[0].id);
+}
+
+void ApiTest::testCaseUserFollows()
+{
+    auto request = std::make_shared<Helix::UserFollowsRequest>();
+    request->fromId = userId;
+    request->first = 24;
+
+    qDebug() << "User follows url:" << request->getFullUrl();
+
+    auto response = sendRequest(request);
+    auto follows = dynamic_pointer_cast<Helix::FollowsList> (
+                 shared_ptr<Object>(move(response->object)) );
+    QVERIFY(follows);
+    qDebug() << "User follows" << follows->data[0].toName << "since" << follows->data[0].followedAt;
 }
 
 QTEST_MAIN(ApiTest)
