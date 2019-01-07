@@ -50,6 +50,10 @@ QUrlQuery StreamsRequest::getQuery() const
 
 QUrlQuery UserFollowsRequest::getQuery() const
 {
+    if (!fromId && !toId)
+        qWarning() << "Neither toId nor fromId is specified.\n"
+                      "Please check your usage of the API.";
+
     QUrlQuery query = Base::getQuery();
     addParam(query, QStringLiteral("from_id"), fromId);
     addParam(query, QStringLiteral("to_id"), toId);
