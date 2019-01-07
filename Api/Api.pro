@@ -21,7 +21,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     client.cpp \
     request.cpp \
-    jsonsetter.cpp
+    jsonsetter.cpp \
+    Helix/endpoints.cpp
 
 HEADERS += \
     client.h \
