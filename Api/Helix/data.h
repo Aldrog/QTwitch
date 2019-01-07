@@ -94,6 +94,70 @@ public:
     }
 };
 
+class QTWITCHSHARED_EXPORT UserData : public Object
+{
+public:
+    std::string id;
+    std::string login;
+    std::string displayName;
+    enum class Type {
+        Staff, Admin, GlobalMod, None
+    } type;
+    enum class BroadcasterType {
+        Partner, Affiliate, None
+    } broadcasterType;
+    std::string description;
+    std::string profileImageUrl;
+    std::string offlineImageUrl;
+    int viewCount;
+    std::string email;
+
+    template<class T>
+    void accept(const T &visitor)
+    {
+        visitor.visit(id, "id");
+        visitor.visit(login, "login");
+        visitor.visit(displayName, "display_name");
+
+        visitor.visit(description, "description");
+        visitor.visit(profileImageUrl, "profile_image_url");
+        visitor.visit(viewCount, "view_count");
+        visitor.visit(email, "email");
+    }
+
+private:
+    Type typeFromString(const std::string &value) const
+    {
+        if (value == "staff")
+            return Type::Staff;
+        if (value == "admin")
+            return Type::Admin;
+        if (value == "global_mod")
+            return Type::GlobalMod;
+        return Type::None;
+    }
+    BroadcasterType broadcasterTypeFromString(const std::string &value) const
+    {
+        if (value == "partner")
+            return BroadcasterType::Partner;
+        if (value == "affiliate")
+            return BroadcasterType::Affiliate;
+        return BroadcasterType::None;
+    }
+};
+
+class QTWITCHSHARED_EXPORT UsersList : public Object
+{
+public:
+    std::vector<UserData> data;
+
+    template<class T>
+    void accept(const T &visitor)
+    {
+        visitor.visit(data, "data");
+    }
+};
+
 class QTWITCHSHARED_EXPORT FollowData : public Object
 {
 public:

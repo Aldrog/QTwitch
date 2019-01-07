@@ -42,6 +42,14 @@ QUrlQuery StreamsRequest::getQuery() const
     return query;
 }
 
+QUrlQuery UsersRequest::getQuery() const
+{
+    QUrlQuery query = Base::getQuery();
+    addParam(query, QStringLiteral("id"), id);
+    addParam(query, QStringLiteral("login"), login);
+    return query;
+}
+
 QUrlQuery UserFollowsRequest::getQuery() const
 {
     if (!fromId && !toId)
@@ -128,5 +136,6 @@ QUrlQuery VideosRequest::getQuery() const
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(GamesRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(TopGamesRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(StreamsRequest)
+GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(UsersRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(UserFollowsRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(VideosRequest)

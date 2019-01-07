@@ -75,6 +75,22 @@ protected:
     QUrlQuery getQuery() const final;
 };
 
+class QTWITCHSHARED_EXPORT UsersRequest final : public Request
+{
+    typedef Request Base;
+    typedef UsersList ResponseObjectType;
+public:
+    std::vector<QString> id;
+    std::vector<QString> login;
+
+    QString endpoint() const final { return QStringLiteral("users"); }
+
+    std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
+
+protected:
+    QUrlQuery getQuery() const final;
+};
+
 // TODO: According to docs this request doesn't allow backward navigation
 class QTWITCHSHARED_EXPORT UserFollowsRequest final : public PagedRequest
 {
