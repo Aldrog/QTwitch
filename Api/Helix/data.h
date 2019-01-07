@@ -10,7 +10,7 @@ namespace Helix {
 class QTWITCHSHARED_EXPORT Pagination : public Object
 {
 public:
-    std::string cursor;
+    QString cursor;
 
     template<class T>
     void accept(const T &visitor)
@@ -22,9 +22,9 @@ public:
 class QTWITCHSHARED_EXPORT GameData : public Object
 {
 public:
-    std::string id;
-    std::string name;
-    std::string boxArtUrl;
+    QString id;
+    QString name;
+    QString boxArtUrl;
 
     template<class T>
     void accept(const T &visitor)
@@ -52,17 +52,17 @@ public:
 class QTWITCHSHARED_EXPORT StreamData : public Object
 {
 public:
-    std::string id;
-    std::string userId;
-    std::string userName;
-    std::string gameId;
-    std::vector<std::string> communityIds;
-    std::string type;
-    std::string title;
+    QString id;
+    QString userId;
+    QString userName;
+    QString gameId;
+    std::vector<QString> communityIds;
+    QString type;
+    QString title;
     int viewerCount;
-    std::string startedAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
-    std::string language;
-    std::string thumbnailUrl;
+    QString startedAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
+    QString language;
+    QString thumbnailUrl;
 
     template<class T>
     void accept(const T &visitor)
@@ -97,20 +97,20 @@ public:
 class QTWITCHSHARED_EXPORT UserData : public Object
 {
 public:
-    std::string id;
-    std::string login;
-    std::string displayName;
+    QString id;
+    QString login;
+    QString displayName;
     enum class Type {
         Staff, Admin, GlobalMod, None
     } type;
     enum class BroadcasterType {
         Partner, Affiliate, None
     } broadcasterType;
-    std::string description;
-    std::string profileImageUrl;
-    std::string offlineImageUrl;
+    QString description;
+    QString profileImageUrl;
+    QString offlineImageUrl;
     int viewCount;
-    std::string email;
+    QString email;
 
     template<class T>
     void accept(const T &visitor)
@@ -126,7 +126,7 @@ public:
     }
 
 private:
-    Type typeFromString(const std::string &value) const
+    Type typeFromString(const QString &value) const
     {
         if (value == "staff")
             return Type::Staff;
@@ -136,7 +136,7 @@ private:
             return Type::GlobalMod;
         return Type::None;
     }
-    BroadcasterType broadcasterTypeFromString(const std::string &value) const
+    BroadcasterType broadcasterTypeFromString(const QString &value) const
     {
         if (value == "partner")
             return BroadcasterType::Partner;
@@ -161,11 +161,11 @@ public:
 class QTWITCHSHARED_EXPORT FollowData : public Object
 {
 public:
-    std::string fromId;
-    std::string fromName;
-    std::string toId;
-    std::string toName;
-    std::string followedAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
+    QString fromId;
+    QString fromName;
+    QString toId;
+    QString toName;
+    QString followedAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
 
     template<class T>
     void accept(const T &visitor)
@@ -197,24 +197,24 @@ public:
 class QTWITCHSHARED_EXPORT VideoData : public Object
 {
 public:
-    std::string id;
-    std::string userId;
-    std::string userName;
-    std::string title;
-    std::string description;
-    std::string createdAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
-    std::string publishedAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
-    std::string url;
-    std::string thumbnailUrl;
+    QString id;
+    QString userId;
+    QString userName;
+    QString title;
+    QString description;
+    QString createdAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
+    QString publishedAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
+    QString url;
+    QString thumbnailUrl;
     enum class Viewable {
         Public, Private, Unknown
     } viewable;
     int viewCount;
-    std::string language;
+    QString language;
     enum class Type {
         Upload, Archive, Highlight, Unknown
     } type;
-    std::string duration;
+    QString duration;
 
     template<class T>
     void accept(const T &visitor)
@@ -229,14 +229,14 @@ public:
         visitor.visit(url, "url");
         visitor.visit(thumbnailUrl, "thumbnail_url");
 
-        std::string viewableString;
+        QString viewableString;
         visitor.visit(viewableString, "viewable");
         viewable = viewableFromString(viewableString);
 
         visitor.visit(viewCount, "view_count");
         visitor.visit(language, "language");
 
-        std::string typeString;
+        QString typeString;
         visitor.visit(typeString, "type");
         type = typeFromString(typeString);
 
@@ -244,16 +244,16 @@ public:
     }
 
 private:
-    Viewable viewableFromString(const std::string &value) const
+    Viewable viewableFromString(const QString &value) const
     {
         if (value == "public")
             return Viewable::Public;
         if (value == "private")
             return Viewable::Private;
-        qWarning() << "Unexpected video viewable field";
+        qWarning() << "Unexpected video viewable field" << value;
         return Viewable::Unknown;
     }
-    Type typeFromString(const std::string &value) const
+    Type typeFromString(const QString &value) const
     {
         if (value == "upload")
             return Type::Upload;
@@ -261,7 +261,7 @@ private:
             return Type::Archive;
         if (value == "highlight")
             return Type::Highlight;
-        qWarning() << "Unexpected video type field";
+        qWarning() << "Unexpected video type field" << value;
         return Type::Unknown;
     }
 };

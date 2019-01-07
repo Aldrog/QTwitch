@@ -7,22 +7,22 @@ JsonSetter::JsonSetter(const QJsonObject &input)
 {
 }
 
-void JsonSetter::visit(std::string &value, const std::string &key) const
+void JsonSetter::visit(QString &value, const QString &key) const
 {
-    value = json[QString::fromStdString(key)].toString().toStdString();
+    value = json[key].toString();
 }
 
-void JsonSetter::visit(int &value, const std::string &key) const
+void JsonSetter::visit(int &value, const QString &key) const
 {
-    value = json[QString::fromStdString(key)].toInt();
+    value = json[key].toInt();
 }
 
-void JsonSetter::visit(double &value, const std::string &key) const
+void JsonSetter::visit(double &value, const QString &key) const
 {
-    value = json[QString::fromStdString(key)].toDouble();
+    value = json[key].toDouble();
 }
 
-void JsonSetter::visit(bool &value, const std::string &key) const
+void JsonSetter::visit(bool &value, const QString &key) const
 {
-    value = json[QString::fromStdString(key)].toBool();
+    value = json[key].toBool();
 }

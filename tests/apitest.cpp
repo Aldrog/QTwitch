@@ -125,7 +125,7 @@ void ApiTest::testCaseUser()
     QVERIFY(users);
     QVERIFY(users->data.size() == request->id.size() + request->login.size());
     qDebug() << users->data[0].displayName << "ID is" << users->data[0].id;
-    userId = QString::fromStdString(users->data[0].id);
+    userId = users->data[0].id;
 }
 
 void ApiTest::testCaseUserFollows()

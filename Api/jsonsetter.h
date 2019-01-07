@@ -30,15 +30,15 @@ public:
     explicit JsonSetter(const QJsonObject &input);
 
     template<class T>
-    void visit(T &object, const std::string &key) const
+    void visit(T &object, const QString &key) const
     {
-        object.accept(JsonSetter(json[QString::fromStdString(key)].toObject()));
+        object.accept(JsonSetter(json[key].toObject()));
     }
 
     template<class T>
-    void visit(std::vector<T> &object, const std::string &key) const
+    void visit(std::vector<T> &object, const QString &key) const
     {
-        auto jsonArray = json[QString::fromStdString(key)].toArray();
+        auto jsonArray = json[key].toArray();
         for (auto it : jsonArray)
         {
             T el;
@@ -50,14 +50,14 @@ public:
         }
     }
 
-    void visit(std::string &value, const std::string &key) const;
-    void visit(int &value, const std::string &key) const;
-    void visit(double &value, const std::string &key) const;
-    void visit(bool &value, const std::string &key) const;
+    void visit(QString &value, const QString &key) const;
+    void visit(int &value, const QString &key) const;
+    void visit(double &value, const QString &key) const;
+    void visit(bool &value, const QString &key) const;
 private:
     QJsonObject json;
 
-    inline void set(std::string &value, const QJsonValueRef &it) const { value = it.toString().toStdString(); }
+    inline void set(QString &value, const QJsonValueRef &it) const { value = it.toString(); }
     inline void set(int &value, const QJsonValueRef &it) const { value = it.toInt(); }
     inline void set(double &value, const QJsonValueRef &it) const { value = it.toDouble(); }
     inline void set(bool &value, const QJsonValueRef &it) const { value = it.toBool(); }
