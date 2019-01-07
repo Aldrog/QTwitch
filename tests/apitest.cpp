@@ -73,7 +73,7 @@ void ApiTest::testCaseTopGames()
     QVERIFY(!receiveWatcher.isEmpty());
     auto response = receiveWatcher.first().first().value<shared_ptr<Response>>();
     QVERIFY(response->request == request);
-    auto games = dynamic_pointer_cast<Helix::TopGames> (
+    auto games = dynamic_pointer_cast<Helix::GamesList> (
                  shared_ptr<Object>(move(response->object)) );
     QVERIFY(games);
     qDebug() << "The most popular game is" << games->data[0].name;

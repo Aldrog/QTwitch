@@ -35,7 +35,7 @@ public:
     }
 };
 
-class QTWITCHSHARED_EXPORT TopGames : public Object
+class QTWITCHSHARED_EXPORT GamesList : public Object
 {
 public:
     std::vector<GameData> data;

@@ -1,9 +1,49 @@
 #include "request.h"
-#include <QUrl>
+#include <QUrlQuery>
 
 using namespace QTwitch::Api;
 
+QString Request::getUrlString() const
+{
+    return baseUrl() + endpoint();
+}
+
+QUrlQuery Request::getQuery() const
+{
+    return QUrlQuery();
+}
+
 QUrl Request::getFullUrl() const
 {
-    return QUrl(baseUrl() + endpoint());
+    QUrl url(getUrlString());
+    url.setQuery(getQuery());
+    return url;
+}
+
+void Request::addParam(QUrlQuery &query, const QString &key, const QString &value) const
+{
+    query.addQueryItem(key, value);
+}
+
+void Request::addParam(QUrlQuery &query, const QString &key, int value) const
+{
+    query.addQueryItem(key, QString::number(value));
+}
+
+void Request::addParam(QUrlQuery &query, const QString &key, const std::vector<QString> &value) const
+{
+    auto it = value.begin();
+    QString valString = *it;
+    for (++it; it != value.end(); ++it)
+        valString += ',' + *it;
+    query.addQueryItem(key, valString);
+}
+
+void Request::addParam(QUrlQuery &query, const QString &key, const std::vector<int> &value) const
+{
+    auto it = value.begin();
+    QString valString = QString::number(*it);
+    for (++it; it != value.end(); ++it)
+        valString += ',' + QString::number(*it);
+    query.addQueryItem(key, valString);
 }
