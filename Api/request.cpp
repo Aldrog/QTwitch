@@ -38,20 +38,14 @@ void Request::addParam(QUrlQuery &query, const QString &key, const std::vector<Q
 {
     if (value.empty())
         return;
-    auto it = value.begin();
-    QString valString = *it;
-    for (++it; it != value.end(); ++it)
-        valString += ',' + *it;
-    query.addQueryItem(key, valString);
+    for (const auto &v: value)
+        query.addQueryItem(key, v);
 }
 
 void Request::addParam(QUrlQuery &query, const QString &key, const std::vector<int> &value) const
 {
     if (value.empty())
         return;
-    auto it = value.begin();
-    QString valString = QString::number(*it);
-    for (++it; it != value.end(); ++it)
-        valString += ',' + QString::number(*it);
-    query.addQueryItem(key, valString);
+    for (auto v : value)
+        query.addQueryItem(key, QString::number(v));
 }
