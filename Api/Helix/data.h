@@ -60,7 +60,7 @@ public:
     std::string type;
     std::string title;
     int viewerCount;
-    std::string startedAt;
+    std::string startedAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
     std::string language;
     std::string thumbnailUrl;
 
@@ -165,7 +165,7 @@ public:
     std::string fromName;
     std::string toId;
     std::string toName;
-    std::string followedAt;
+    std::string followedAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
 
     template<class T>
     void accept(const T &visitor)
@@ -202,8 +202,8 @@ public:
     std::string name;
     std::string title;
     std::string description;
-    std::string createdAt;
-    std::string publishedAt;
+    std::string createdAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
+    std::string publishedAt; /* RFC3339 format. It's not supported by QDateTime ATM. */
     std::string url;
     std::string thumbnailUrl;
     enum class Viewable {
