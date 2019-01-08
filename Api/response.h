@@ -16,7 +16,7 @@ class Object
 {
 public:
     Object(const Object &) = delete;
-    void operator =(const Object &) = delete;
+    Object& operator =(const Object &) = delete;
 
     Object() = default;
     Object(Object &&) = default;
