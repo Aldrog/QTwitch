@@ -22,15 +22,18 @@ SOURCES += \
     client.cpp \
     request.cpp \
     jsonsetter.cpp \
-    Helix/endpoints.cpp
+    Helix/endpoints.cpp \
+    qsettingscredentialsstorage.cpp
 
 HEADERS += \
     client.h \
     request.h \
     response.h \
+    jsonsetter.h \
+    credentials.h \
     Helix/endpoints.h \
     Helix/data.h \
-    jsonsetter.h
+    qsettingscredentialsstorage.h
 
 unix {
     target.path = /usr/lib

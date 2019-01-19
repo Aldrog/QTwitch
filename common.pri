@@ -11,6 +11,14 @@ isEmpty( TWITCH_CLIENT_ID ): {
     DEFINES += TWITCH_CLIENT_ID=\"\\\"$$TWITCH_CLIENT_ID\\\"\"
 }
 
+TWITCH_REDIRECT_URI = $$(TWITCH_REDIRECT_URI)
+isEmpty( TWITCH_REDIRECT_URI ): {
+    warning("Authorization requires a known redirect uri. If you want to perform user authorization, please set redirect uri on Twitch dashboard and specify it in TWITCH_REDIRECT_URI environment variable.")
+    DEFINES += TWITCH_REDIRECT_URI=\"\\\"\\\"\"
+} else: {
+    DEFINES += TWITCH_REDIRECT_URI=\"\\\"$$TWITCH_REDIRECT_URI\\\"\"
+}
+
 debug {
     QMAKE_CXXFLAGS += -Werror
 }

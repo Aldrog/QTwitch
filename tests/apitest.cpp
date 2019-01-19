@@ -21,6 +21,7 @@
 #include <QtTest>
 #include "client.h"
 #include "Helix/endpoints.h"
+#include "qsettingscredentialsstorage.h"
 
 using namespace QTwitch::Api;
 using namespace std;
@@ -48,6 +49,7 @@ private slots:
     void testCaseUserFollows();
     void testCaseStreams();
     void testCaseVideos();
+    void testCaseAuthorization();
 
     void cleanupTestCase();
 
@@ -191,6 +193,22 @@ void ApiTest::testCaseVideos()
     QVERIFY(videos);
     qDebug() << "Video by" << videos->data[0].userName << "titled" << videos->data[0].title
              << "was published at" << videos->data[0].publishedAt << "and got" << videos->data[0].viewCount << "views.";
+}
+
+void ApiTest::testCaseAuthorization()
+{
+    QSignalSpy authWatcher(client.get(), &Client::authorizationCompleted);
+    connect(client.get(), &Client::authorizationError, [] (Client::AuthorizationError e) { qDebug() << "Authorization error:" << e; });
+    client->setCredentialsStorage(std::make_unique<QSettingsCredentialsStorage>(QCoreApplication::applicationDirPath() + "/test.ini", QSettings::Format::IniFormat));
+    qInfo() << "Copy the following into a browser:\n" << client->initiateAuthorization({Client::AuthorizationScope::UserFollowsEdit,
+                                                                                        Client::AuthorizationScope::ChatEdit,
+                                                                                        Client::AuthorizationScope::ChatRead});
+    QTextStream input(stdin);
+    qInfo() << "After authorization paste redirect url into the terminal:";
+    QString inputLine = input.readLine();
+    QUrl redirect(inputLine);
+    client->updateAuthorization(redirect);
+    QVERIFY(!authWatcher.isEmpty());
 }
 
 QTEST_MAIN(ApiTest)
