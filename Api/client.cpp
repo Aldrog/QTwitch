@@ -18,6 +18,8 @@
  */
 
 #include "client.h"
+#include "authorizationflow.h"
+
 #include <QtDebug>
 #include <QJsonDocument>
 #include <QUrlQuery>
@@ -42,8 +44,10 @@ void Client::send(const std::shared_ptr<Request> &request)
 {
     QNetworkRequest qreq(request->getFullUrl());
     qreq.setRawHeader("Client-ID", TWITCH_CLIENT_ID);
+    if (!credentials.authToken.isEmpty())
+        qreq.setRawHeader("Authorization", (request->authorizationPrefix() + credentials.authToken).toUtf8());
     QNetworkReply *qrep = network->get(qreq);
-    connect(qrep, &QNetworkReply::readyRead, [&] ()
+    connect(qrep, &QNetworkReply::readyRead, [this, qrep, request] ()
     {
         auto responseObject = request->createResponseObject(qrep->readAll());
         auto response = std::make_shared<Response>();
@@ -105,7 +109,7 @@ void Client::updateAuthorization(const QUrl &url)
     QUrlQuery query(url);
     // QUrl fails parsing if fragment comes before query
     if (query.isEmpty()) {
-        query = QUrlQuery(fragment);
+        query.setQuery(fragment);
         fragment = fragment.left(fragment.indexOf('&'));
     }
 
@@ -129,13 +133,7 @@ void Client::updateAuthorization(const QUrl &url)
     fragment.remove(0, keyLength);
     credentials.authToken = std::move(fragment);
 
-    if (!verifyAuthorization()) {
-        emit authorizationError(AuthorizationError::VerificationFailed);
-        return;
-    }
-
-    credentialsStorage->writeCredentials(credentials);
-    emit authorizationCompleted();
+    verifyAuthorization();
 }
 
 void Client::eraseAuthorization()
@@ -145,9 +143,18 @@ void Client::eraseAuthorization()
     credentialsStorage->clearCredentials();
 }
 
-bool Client::verifyAuthorization()
+void Client::verifyAuthorization()
 {
-    return true;
+    using namespace Authorization;
+    auto request = std::make_shared<ValidateRequest>();
+    connect(request.get(), &Request::responseReceived, [this] (const std::shared_ptr<Response> &responce)
+    {
+        auto data = std::static_pointer_cast<ValidationData>(std::shared_ptr(move(responce->object)));
+        credentials.userId = data->userId;
+        credentialsStorage->writeCredentials(credentials);
+        emit authorizationCompleted();
+    });
+    send(request);
 }
 
 QString Client::generateRandomString(int from, int to)
@@ -156,7 +163,7 @@ QString Client::generateRandomString(int from, int to)
     int size = rng->bounded(from, to);
     QString result;
     for (int i = 0; i < size; ++i) {
-        char symbol = rng->bounded(66);
+        auto symbol = static_cast<char>(rng->bounded(66));
         if (symbol < 26)
             symbol += 'A';
         else if ((symbol -= 26) < 26)

@@ -36,6 +36,7 @@ public:
     virtual ~Request() = default;
     virtual QString baseUrl() const = 0;
     virtual QString endpoint() const = 0;
+    virtual QString authorizationPrefix() const = 0;
 
     QUrl getFullUrl() const;
     virtual std::unique_ptr<Object> createResponseObject(const QByteArray &) const = 0;

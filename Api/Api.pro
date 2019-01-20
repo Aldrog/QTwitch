@@ -22,7 +22,8 @@ SOURCES += \
     client.cpp \
     request.cpp \
     Helix/endpoints.cpp \
-    qsettingscredentialsstorage.cpp
+    qsettingscredentialsstorage.cpp \
+    authorizationflow.cpp
 
 HEADERS += \
     client.h \
@@ -32,7 +33,8 @@ HEADERS += \
     credentials.h \
     Helix/endpoints.h \
     Helix/data.h \
-    qsettingscredentialsstorage.h
+    qsettingscredentialsstorage.h \
+    authorizationflow.h
 
 unix {
     target.path = /usr/lib

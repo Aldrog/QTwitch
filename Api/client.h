@@ -94,7 +94,7 @@ public slots:
     QUrl initiateAuthorization(const std::vector<AuthorizationScope> &scopes, bool force = false);
     void updateAuthorization(const QUrl &url);
     void eraseAuthorization();
-    bool verifyAuthorization();
+    void verifyAuthorization();
 
 signals:
     void receive(const std::shared_ptr<QTwitch::Api::Response> &response);

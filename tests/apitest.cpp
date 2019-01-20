@@ -208,6 +208,7 @@ void ApiTest::testCaseAuthorization()
     QString inputLine = input.readLine();
     QUrl redirect(inputLine);
     client->updateAuthorization(redirect);
+    authWatcher.wait();
     QVERIFY(!authWatcher.isEmpty());
 }
 
