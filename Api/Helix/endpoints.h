@@ -22,9 +22,6 @@
 
 #include "request.h"
 #include "data.h"
-#include "jsonsetter.h"
-#include <QJsonDocument>
-#include <QUrlQuery>
 #include <QtDebug>
 
 namespace QTwitch {

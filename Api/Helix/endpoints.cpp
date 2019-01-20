@@ -18,6 +18,8 @@
  */
 
 #include "endpoints.h"
+#include "jsonsetter.h"
+#include <QUrlQuery>
 
 using namespace QTwitch::Api;
 using namespace QTwitch::Api::Helix;
@@ -142,15 +144,6 @@ QUrlQuery VideosRequest::getQuery() const
 
     return query;
 }
-
-#define GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(RequestType) \
-    std::unique_ptr<Object> RequestType::createResponseObject(const QByteArray &data) const \
-    { \
-        auto result = std::make_unique<ResponseObjectType>(); \
-        JsonSetter visitor(QJsonDocument::fromJson(data).object()); \
-        result->accept(visitor); \
-        return result; \
-    }
 
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(GamesRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(TopGamesRequest)

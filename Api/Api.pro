@@ -21,7 +21,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     client.cpp \
     request.cpp \
-    jsonsetter.cpp \
     Helix/endpoints.cpp \
     qsettingscredentialsstorage.cpp
 
