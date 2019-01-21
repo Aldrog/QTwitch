@@ -197,18 +197,22 @@ void ApiTest::testCaseVideos()
 
 void ApiTest::testCaseAuthorization()
 {
+    client->setCredentialsStorage(std::make_unique<QSettingsCredentialsStorage>(QCoreApplication::applicationDirPath() + "/test.ini", QSettings::Format::IniFormat));
+    if (client->authorizationStatus == Client::AuthorizationStatus::Authorized)
+        QSKIP("Skipping authorization. Remove test.ini to redo authorization test.");
     QSignalSpy authWatcher(client.get(), &Client::authorizationCompleted);
     connect(client.get(), &Client::authorizationError, [] (Client::AuthorizationError e) { qDebug() << "Authorization error:" << e; });
-    client->setCredentialsStorage(std::make_unique<QSettingsCredentialsStorage>(QCoreApplication::applicationDirPath() + "/test.ini", QSettings::Format::IniFormat));
     qInfo() << "Copy the following into a browser:\n" << client->initiateAuthorization({Client::AuthorizationScope::UserFollowsEdit,
                                                                                         Client::AuthorizationScope::ChatEdit,
                                                                                         Client::AuthorizationScope::ChatRead});
+    qDebug() << client->authorizationStatus;
     QTextStream input(stdin);
     qInfo() << "After authorization paste redirect url into the terminal:";
     QString inputLine = input.readLine();
     QUrl redirect(inputLine);
     client->updateAuthorization(redirect);
     authWatcher.wait();
+    QVERIFY(client->authorizationStatus == Client::AuthorizationStatus::Authorized);
     QVERIFY(!authWatcher.isEmpty());
 }
 

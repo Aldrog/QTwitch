@@ -34,7 +34,8 @@ namespace Api {
 
 class QTWITCHSHARED_EXPORT Client : public QObject
 {
-Q_OBJECT
+    Q_OBJECT
+    Q_PROPERTY(AuthorizationStatus authorizationStatus MEMBER authorizationStatus NOTIFY authorizationStatusChanged)
 public:
     explicit Client(QObject *parent = nullptr);
 
@@ -88,6 +89,16 @@ public:
     };
     Q_ENUM(AuthorizationScope)
 
+    enum class AuthorizationStatus
+    {
+        Authorized,
+        NotAuthorized,
+        Invalid
+    };
+    Q_ENUM(AuthorizationStatus)
+
+    AuthorizationStatus authorizationStatus = AuthorizationStatus::NotAuthorized;
+
 public slots:
     void send(const std::shared_ptr<QTwitch::Api::Request> &request);
 
@@ -103,7 +114,7 @@ signals:
     void sslErrors(QNetworkReply *reply, const QList<QSslError> &e);
 
     void authorizationCompleted();
-    void browserRequired(const QUrl &url);
+    void authorizationStatusChanged(AuthorizationStatus status);
     void authorizationError(AuthorizationError e);
 
 private:
@@ -111,6 +122,8 @@ private:
     std::unique_ptr<AbstractCredentialsStorage> credentialsStorage;
 
     Credentials credentials;
+
+    void setAuthorizationStatus(AuthorizationStatus status);
 
     QString authorizationStateParameter;
 

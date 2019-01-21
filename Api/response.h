@@ -47,6 +47,7 @@ struct QTWITCHSHARED_EXPORT Response
 {
     std::shared_ptr<Request> request;
     std::unique_ptr<Object> object;
+    int status;
 };
 
 }

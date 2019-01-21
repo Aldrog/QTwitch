@@ -38,21 +38,30 @@ void Client::setCredentialsStorage(std::unique_ptr<AbstractCredentialsStorage> s
 {
     credentialsStorage = std::move(storage);
     credentialsStorage->readCredentials(credentials);
+    if (!credentials.authToken.isEmpty()) {
+        setAuthorizationStatus(AuthorizationStatus::Authorized);
+        verifyAuthorization();
+    }
 }
 
 void Client::send(const std::shared_ptr<Request> &request)
 {
     QNetworkRequest qreq(request->getFullUrl());
     qreq.setRawHeader("Client-ID", TWITCH_CLIENT_ID);
-    if (!credentials.authToken.isEmpty())
+    if (authorizationStatus == AuthorizationStatus::Authorized)
         qreq.setRawHeader("Authorization", (request->authorizationPrefix() + credentials.authToken).toUtf8());
     QNetworkReply *qrep = network->get(qreq);
     connect(qrep, &QNetworkReply::readyRead, [this, qrep, request] ()
     {
         auto responseObject = request->createResponseObject(qrep->readAll());
         auto response = std::make_shared<Response>();
+
         response->object = std::move(responseObject);
         response->request = request;
+        response->status = qrep->error();
+        if (response->status != QNetworkReply::NoError)
+            qDebug() << "Error:" << qrep->errorString();
+
         emit receive(response);
         emit request->responseReceived(response);
         qrep->deleteLater();
@@ -141,6 +150,7 @@ void Client::eraseAuthorization()
     assert(credentialsStorage);
     credentials.clear();
     credentialsStorage->clearCredentials();
+    setAuthorizationStatus(AuthorizationStatus::NotAuthorized);
 }
 
 void Client::verifyAuthorization()
@@ -149,12 +159,25 @@ void Client::verifyAuthorization()
     auto request = std::make_shared<ValidateRequest>();
     connect(request.get(), &Request::responseReceived, [this] (const std::shared_ptr<Response> &responce)
     {
+        if (responce->status != QNetworkReply::NoError) {
+            setAuthorizationStatus(AuthorizationStatus::Invalid);
+            return;
+        }
         auto data = std::static_pointer_cast<ValidationData>(std::shared_ptr(move(responce->object)));
         credentials.userId = data->userId;
         credentialsStorage->writeCredentials(credentials);
         emit authorizationCompleted();
+        setAuthorizationStatus(AuthorizationStatus::Authorized);
     });
     send(request);
+}
+
+void Client::setAuthorizationStatus(AuthorizationStatus status)
+{
+    if (authorizationStatus != status) {
+        authorizationStatus = status;
+        emit authorizationStatusChanged(authorizationStatus);
+    }
 }
 
 QString Client::generateRandomString(int from, int to)
