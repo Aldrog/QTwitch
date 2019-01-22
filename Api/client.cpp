@@ -46,11 +46,31 @@ void Client::setCredentialsStorage(std::unique_ptr<AbstractCredentialsStorage> s
 
 void Client::send(const std::shared_ptr<Request> &request)
 {
+    if (authorizationStatus == AuthorizationStatus::Authorized && !request->authorizationPrefix()) {
+        request->setAuthorization(credentials.authToken);
+    }
+
     QNetworkRequest qreq(request->getFullUrl());
+
     qreq.setRawHeader("Client-ID", TWITCH_CLIENT_ID);
-    if (authorizationStatus == AuthorizationStatus::Authorized)
-        qreq.setRawHeader("Authorization", (request->authorizationPrefix() + credentials.authToken).toUtf8());
-    QNetworkReply *qrep = network->get(qreq);
+    if (authorizationStatus == AuthorizationStatus::Authorized && request->authorizationPrefix()) {
+        qreq.setRawHeader("Authorization", (*request->authorizationPrefix() + credentials.authToken).toUtf8());
+    }
+
+    QNetworkReply *qrep = nullptr;
+    switch (request->requestType()) {
+    case Request::RequestType::Get:
+        qrep = network->get(qreq);
+        break;
+    case Request::RequestType::Put:
+        qrep = network->put(qreq, QByteArray());
+        break;
+    case Request::RequestType::Delete:
+        qrep = network->deleteResource(qreq);
+        break;
+    }
+    assert(qrep);
+
     connect(qrep, &QNetworkReply::readyRead, [this, qrep, request] ()
     {
         auto responseObject = request->createResponseObject(qrep->readAll());

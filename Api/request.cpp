@@ -39,18 +39,19 @@ QUrl Request::getFullUrl() const
     return url;
 }
 
-void Request::addParam(QUrlQuery &query, const QString &key, const std::optional<QString> &value) const
+void Request::addParam(QUrlQuery &query, const QString &key, const QString &value) const
 {
-    if (!value)
-        return;
-    query.addQueryItem(key, *value);
+    query.addQueryItem(key, value);
 }
 
-void Request::addParam(QUrlQuery &query, const QString &key, const std::optional<int> &value) const
+void Request::addParam(QUrlQuery &query, const QString &key, const int &value) const
 {
-    if (!value)
-        return;
-    query.addQueryItem(key, QString::number(*value));
+    query.addQueryItem(key, QString::number(value));
+}
+
+void Request::addParam(QUrlQuery &query, const QString &key, const bool &value) const
+{
+    query.addQueryItem(key, value ? QStringLiteral("true") : QStringLiteral("false"));
 }
 
 void Request::addParam(QUrlQuery &query, const QString &key, const std::vector<QString> &value) const

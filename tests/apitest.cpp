@@ -21,6 +21,8 @@
 #include <QtTest>
 #include "client.h"
 #include "Helix/endpoints.h"
+#include "v5/endpoints.h"
+#include "Usher/endpoints.h"
 #include "qsettingscredentialsstorage.h"
 
 using namespace QTwitch::Api;
@@ -50,6 +52,7 @@ private slots:
     void testCaseStreams();
     void testCaseVideos();
     void testCaseAuthorization();
+    void testCaseStreamPlaylist();
 
     void cleanupTestCase();
 
@@ -214,6 +217,65 @@ void ApiTest::testCaseAuthorization()
     authWatcher.wait();
     QVERIFY(client->authorizationStatus == Client::AuthorizationStatus::Authorized);
     QVERIFY(!authWatcher.isEmpty());
+}
+
+void ApiTest::testCaseStreamPlaylist()
+{
+    QString channelId;
+    {
+        auto request = std::make_shared<Helix::StreamsRequest>();
+        request->first = 1;
+
+        qDebug() << "Streams url:" << request->getFullUrl();
+
+        auto response = sendRequest(request);
+        auto streams = dynamic_pointer_cast<Helix::StreamsList> (
+                     shared_ptr<Object>(move(response->object)) );
+        QVERIFY(streams);
+        channelId = streams->data[0].userId;
+    }
+    QString channelLogin;
+    {
+        auto request = std::make_shared<Helix::UsersRequest>();
+        request->id = {channelId};
+
+        qDebug() << "Streams url:" << request->getFullUrl();
+
+        auto response = sendRequest(request);
+        auto users = dynamic_pointer_cast<Helix::UsersList> (
+                     shared_ptr<Object>(move(response->object)) );
+        QVERIFY(users);
+        channelLogin = users->data[0].login;
+    }
+    std::shared_ptr<Usher::AccessToken> token;
+    {
+        auto request = std::make_shared<Usher::StreamAccessTokenRequest>();
+        request->channelId = channelLogin;
+
+        qDebug() << "Access token url:" << request->getFullUrl();
+
+        auto response = sendRequest(request);
+        token = dynamic_pointer_cast<Usher::AccessToken> (
+                     shared_ptr<Object>(move(response->object)) );
+        QVERIFY(token);
+    }
+    {
+        auto request = std::make_shared<Usher::StreamPlaylistRequest>();
+        request->channelId = channelLogin;
+        request->sig = token->sig;
+        request->token = token->token;
+
+        qDebug() << "Playlist url:" << request->getFullUrl();
+
+        auto response = sendRequest(request);
+        auto playlist = dynamic_pointer_cast<Usher::Playlist> (
+                     shared_ptr<Object>(move(response->object)) );
+        QVERIFY(playlist);
+        for (const auto &i : playlist->playlist)
+            qDebug() << i.id << i.name << i.url;
+    }
+
+
 }
 
 QTEST_MAIN(ApiTest)

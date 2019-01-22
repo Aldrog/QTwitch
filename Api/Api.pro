@@ -5,6 +5,8 @@ TARGET = QTwitchApi
 TEMPLATE = lib
 include(../common.pri)
 
+CONFIG += object_parallel_to_source
+
 DEFINES += QTWITCH_LIBRARY
 
 # The following define makes your compiler emit warnings if you use
@@ -22,6 +24,8 @@ SOURCES += \
     client.cpp \
     request.cpp \
     Helix/endpoints.cpp \
+    v5/endpoints.cpp \
+    Usher/endpoints.cpp \
     qsettingscredentialsstorage.cpp \
     authorizationflow.cpp
 
@@ -33,6 +37,10 @@ HEADERS += \
     credentials.h \
     Helix/endpoints.h \
     Helix/data.h \
+    v5/endpoints.h \
+    v5/data.h \
+    Usher/endpoints.h \
+    Usher/data.h \
     qsettingscredentialsstorage.h \
     authorizationflow.h
 

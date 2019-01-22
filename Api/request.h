@@ -36,10 +36,21 @@ public:
     virtual ~Request() = default;
     virtual QString baseUrl() const = 0;
     virtual QString endpoint() const = 0;
-    virtual QString authorizationPrefix() const = 0;
+    // Prefix for Authorization header
+    virtual std::optional<QString> authorizationPrefix() const = 0;
+    // When authorizationPrefix() is not set, setAuthorization will be called instead
+    virtual void setAuthorization(const QString &) {}
 
     QUrl getFullUrl() const;
     virtual std::unique_ptr<Object> createResponseObject(const QByteArray &) const = 0;
+
+    enum class RequestType {
+        Get,
+        Put,
+        Delete
+    };
+
+    virtual RequestType requestType() const { return RequestType::Get; }
 
 signals:
     void responseReceived(const std::shared_ptr<QTwitch::Api::Response> &request);
@@ -47,10 +58,19 @@ signals:
 
 protected:
     virtual QUrlQuery getQuery() const;
-    void addParam(QUrlQuery &query, const QString &key, const std::optional<QString> &value) const;
-    void addParam(QUrlQuery &query, const QString &key, const std::optional<int> &value) const;
+    void addParam(QUrlQuery &query, const QString &key, const QString &value) const;
+    void addParam(QUrlQuery &query, const QString &key, const int &value) const;
+    void addParam(QUrlQuery &query, const QString &key, const bool &value) const;
     void addParam(QUrlQuery &query, const QString &key, const std::vector<QString> &value) const;
     void addParam(QUrlQuery &query, const QString &key, const std::vector<int> &value) const;
+
+    template<typename T>
+    void addParam(QUrlQuery &query, const QString &key, const std::optional<T> &value) const
+    {
+        if (!value)
+            return;
+        addParam(query, key, *value);
+    }
 
 private:
     QString getUrlString() const;

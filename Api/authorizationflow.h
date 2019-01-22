@@ -55,7 +55,7 @@ class ValidateRequest final : public Request
 public:
     QString baseUrl() const override { return QStringLiteral("https://id.twitch.tv/oauth2/"); }
     QString endpoint() const override { return QStringLiteral("validate"); }
-    QString authorizationPrefix() const final { return QStringLiteral("OAuth "); }
+    std::optional<QString> authorizationPrefix() const final { return QStringLiteral("OAuth "); }
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const override;
 };
 
