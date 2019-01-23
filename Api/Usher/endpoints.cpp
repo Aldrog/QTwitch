@@ -79,6 +79,17 @@ bool startsWith(const std::string_view &v, const std::string_view &x)
     return v.size() >= x.size() && v.compare(0, x.size(), x) == 0;
 }
 
+std::pair<std::string_view, std::string_view> extractKeyValue(std::string_view &line)
+{
+    line.remove_prefix(1);
+    std::string_view key = line.substr(0, line.find('='));
+    line.remove_prefix(key.size() + 1);
+    std::string_view value = line.substr(0, line.find(','));
+    line.remove_prefix(value.size());
+
+    return {key, value};
+}
+
 std::unique_ptr<Object> PlaylistRequest::createResponseObject(const QByteArray &data) const
 {
     static constexpr std::string_view mediaPrefix("#EXT-X-MEDIA:");
@@ -96,18 +107,14 @@ std::unique_ptr<Object> PlaylistRequest::createResponseObject(const QByteArray &
         std::string_view line(lineStart, lineEnd-lineStart);
         if (startsWith(line, mediaPrefix)) {
             pi = &result->playlist.emplace_back();
-            auto segmentStart = lineStart + mediaPrefix.size() - 1;
-            while (segmentStart != lineEnd) {
-                ++segmentStart;
-                auto segmentEnd = std::find(segmentStart, lineEnd, ',');
-                std::string_view key(segmentStart, std::find(segmentStart, segmentEnd, '=') - segmentStart);
-                auto valueStart = segmentStart + key.size() + 1;
-                std::string_view value(valueStart, segmentEnd - valueStart);
+            line.remove_prefix(mediaPrefix.size() - 1);
+            while (!line.empty()) {
+                auto [key, value] = extractKeyValue(line);
+
                 if (key == idKey)
                     pi->id = QString::fromUtf8(value.data()+1, value.size()-2);
                 if (key == nameKey)
                     pi->name = QString::fromUtf8(value.data()+1, value.size()-2);
-                segmentStart = segmentEnd;
             }
         }
         else if (startsWith(line, infoPrefix)) {
