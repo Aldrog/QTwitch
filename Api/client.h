@@ -99,6 +99,8 @@ public:
 
     AuthorizationStatus authorizationStatus = AuthorizationStatus::NotAuthorized;
 
+    static std::shared_ptr<Client> getClient();
+
 public slots:
     void send(const std::shared_ptr<QTwitch::Api::Request> &request);
 

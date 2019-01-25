@@ -57,7 +57,7 @@ private slots:
     void cleanupTestCase();
 
 protected:
-    unique_ptr<Client> client = make_unique<Client>();
+    shared_ptr<Client> client = Client::getClient();
     QString userId;
 
     std::shared_ptr<Response> sendRequest(const std::shared_ptr<Request> &request)

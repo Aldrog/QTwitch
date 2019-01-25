@@ -44,6 +44,14 @@ void Client::setCredentialsStorage(std::unique_ptr<AbstractCredentialsStorage> s
     }
 }
 
+std::shared_ptr<Client> Client::getClient()
+{
+    static std::shared_ptr<Client> client;
+    if (!client)
+        client = std::make_shared<Client>();
+    return client;
+}
+
 void Client::send(const std::shared_ptr<Request> &request)
 {
     if (authorizationStatus == AuthorizationStatus::Authorized && !request->authorizationPrefix()) {
