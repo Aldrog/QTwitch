@@ -23,7 +23,7 @@
 using namespace QTwitch::Models;
 
 HelixScrollableModel::HelixScrollableModel(QObject *parent)
-    : AbstractEntitledImagesModel (parent)
+    : AbstractEntitledImagesModel(parent)
 {
 }
 
@@ -46,6 +46,7 @@ void HelixScrollableModel::reload()
     pagingCursor.clear();
     request->after.reset();
     request->before.reset();
+    storage.clear();
     QTwitch::Api::Client::getClient()->send(request);
 }
 
