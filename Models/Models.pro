@@ -1,4 +1,5 @@
 QT       -= gui
+QT       += network
 
 TARGET = QTwitchModels
 TEMPLATE = lib
@@ -18,11 +19,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    abstractentitledimagesmodel.cpp
+    abstractentitledimagesmodel.cpp \
+    helixscrollablemodel.cpp
 
 HEADERS += \
     abstractentitledimagesmodel.h \
-    entitledimage.h
+    entitledimage.h \
+    helixscrollablemodel.h
 
 unix {
     target.path = /usr/lib

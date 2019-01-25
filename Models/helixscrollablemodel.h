@@ -17,43 +17,35 @@
  * along with QTwitch.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ABSTRACTENTITLEDIMAGESMODEL_H
-#define ABSTRACTENTITLEDIMAGESMODEL_H
+#ifndef HELIXSCROLLABLEMODEL_H
+#define HELIXSCROLLABLEMODEL_H
 
-#include "qtwitch_global.h"
-#include "entitledimage.h"
-
-#include <QAbstractListModel>
+#include "abstractentitledimagesmodel.h"
+#include <Api/Helix/endpoints.h>
 
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT AbstractEntitledImagesModel : public QAbstractListModel
+class HelixScrollableModel : public AbstractEntitledImagesModel
 {
     Q_OBJECT
 public:
-    enum class Role : int {
-        Image = Qt::UserRole,
-        Title,
-        Subtitle,
-        LastRole = Subtitle
-    };
+    explicit HelixScrollableModel(QObject *parent = nullptr);
 
-    explicit AbstractEntitledImagesModel(QObject *parent = nullptr);
-
-    int rowCount(const QModelIndex &parent) const override;
-    QVariant data(const QModelIndex &index, int role) const override;
-    QHash<int, QByteArray> roleNames() const override;
-
-    virtual void next() = 0;
-    virtual bool nextAvailable() const = 0;
-    virtual void reload() = 0;
+    void next() override;
+    bool nextAvailable() const override;
+    void reload() override;
 
 protected:
-    std::vector<EntitledImage> storage;
+    virtual std::shared_ptr<Api::Helix::PagedRequest> getRequest() const = 0;
+
+    void updateCursor(const QString &cursor);
+
+private:
+    QString pagingCursor;
 };
 
 }
 }
 
-#endif // ABSTRACTENTITLEDIMAGESMODEL_H
+#endif // HELIXSCROLLABLEMODEL_H
