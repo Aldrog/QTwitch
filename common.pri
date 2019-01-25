@@ -20,7 +20,7 @@ isEmpty( TWITCH_REDIRECT_URI ): {
 }
 
 debug {
-    QMAKE_CXXFLAGS += -Werror
+    QMAKE_CXXFLAGS += -Wall -Werror
 }
 
 DEFINES += QTWITCH_VERSION=\"\\\"$$VERSION\\\"\"
