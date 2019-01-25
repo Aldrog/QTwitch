@@ -20,12 +20,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     abstractentitledimagesmodel.cpp \
-    helixscrollablemodel.cpp
+    helixscrollablemodel.cpp \
+    legacyscrollablemodel.cpp
 
 HEADERS += \
     abstractentitledimagesmodel.h \
     entitledimage.h \
-    helixscrollablemodel.h
+    helixscrollablemodel.h \
+    legacyscrollablemodel.h
 
 unix {
     target.path = /usr/lib
