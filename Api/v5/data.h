@@ -20,7 +20,7 @@
 #ifndef V5_DATA_H
 #define V5_DATA_H
 
-#include "response.h"
+#include <Api/response.h>
 
 namespace QTwitch {
 namespace Api {

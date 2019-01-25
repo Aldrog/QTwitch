@@ -20,7 +20,7 @@
 #ifndef USHER_DATA_H
 #define USHER_DATA_H
 
-#include "response.h"
+#include <Api/response.h>
 
 namespace QTwitch {
 namespace Api {

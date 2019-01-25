@@ -20,7 +20,7 @@
 #ifndef V5_ENDPOINTS_H
 #define V5_ENDPOINTS_H
 
-#include "request.h"
+#include <Api/request.h>
 #include "data.h"
 
 namespace QTwitch {

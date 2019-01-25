@@ -20,7 +20,7 @@
 #ifndef HELIX_DATA_H
 #define HELIX_DATA_H
 
-#include "response.h"
+#include <Api/response.h>
 
 namespace QTwitch {
 namespace Api {
