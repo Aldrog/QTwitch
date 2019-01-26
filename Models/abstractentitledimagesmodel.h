@@ -31,6 +31,7 @@ namespace Models {
 class QTWITCHSHARED_EXPORT AbstractEntitledImagesModel : public QAbstractListModel
 {
     Q_OBJECT
+    Q_PROPERTY(int pageSize READ pageSize WRITE setPageSize NOTIFY pageSizeChanged RESET resetPageSize)
 public:
     enum class Role : int {
         Image = Qt::UserRole,
@@ -48,6 +49,13 @@ public:
     virtual void next() = 0;
     virtual bool nextAvailable() const = 0;
     virtual void reload() = 0;
+
+    virtual int pageSize() const = 0;
+    virtual void setPageSize(int newSize) = 0;
+    virtual void resetPageSize() = 0;
+
+signals:
+    void pageSizeChanged(int newSize);
 
 protected:
     std::vector<EntitledImage> storage;

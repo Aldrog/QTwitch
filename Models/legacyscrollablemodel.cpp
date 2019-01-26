@@ -46,3 +46,24 @@ void LegacyScrollableModel::reload()
     storage.clear();
     QTwitch::Api::Client::getClient()->send(request);
 }
+
+int LegacyScrollableModel::pageSize() const
+{
+    auto request = getRequest();
+    if (!request->limit)
+        return 0;
+    return *request->limit;
+}
+
+void LegacyScrollableModel::setPageSize(int newSize)
+{
+    if (pageSize() != newSize) {
+        getRequest()->limit = newSize;
+        emit pageSizeChanged(newSize);
+    }
+}
+
+void LegacyScrollableModel::resetPageSize()
+{
+    getRequest()->limit.reset();
+}

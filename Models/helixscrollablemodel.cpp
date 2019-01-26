@@ -50,6 +50,27 @@ void HelixScrollableModel::reload()
     QTwitch::Api::Client::getClient()->send(request);
 }
 
+int HelixScrollableModel::pageSize() const
+{
+    auto request = getRequest();
+    if (!request->first)
+        return 0;
+    return *request->first;
+}
+
+void HelixScrollableModel::setPageSize(int newSize)
+{
+    if (pageSize() != newSize) {
+        getRequest()->first = newSize;
+        emit pageSizeChanged(newSize);
+    }
+}
+
+void HelixScrollableModel::resetPageSize()
+{
+    getRequest()->first.reset();
+}
+
 void HelixScrollableModel::updateCursor(const QString &cursor)
 {
     pagingCursor = cursor;

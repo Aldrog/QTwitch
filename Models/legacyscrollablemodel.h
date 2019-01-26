@@ -36,6 +36,10 @@ public:
     bool nextAvailable() const override;
     void reload() override;
 
+    int pageSize() const override;
+    void setPageSize(int newSize) override;
+    void resetPageSize() override;
+
 protected:
     virtual std::shared_ptr<Api::v5::LegacyPagedRequest> getRequest() const = 0;
 
