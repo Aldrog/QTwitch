@@ -21,13 +21,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     abstractentitledimagesmodel.cpp \
     helixscrollablemodel.cpp \
-    legacyscrollablemodel.cpp
+    legacyscrollablemodel.cpp \
+    topgamesmodel.cpp
 
 HEADERS += \
     abstractentitledimagesmodel.h \
     entitledimage.h \
     helixscrollablemodel.h \
-    legacyscrollablemodel.h
+    legacyscrollablemodel.h \
+    topgamesmodel.h
 
 unix {
     target.path = /usr/lib
