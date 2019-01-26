@@ -48,3 +48,7 @@ unix {
     target.path = /usr/lib
     INSTALLS += target
 }
+
+pvs_studio.output = true
+pvs_studio.sources = $${SOURCES}
+include(../PVS-Studio.pri)
