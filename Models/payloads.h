@@ -31,7 +31,7 @@ class QTWITCHSHARED_EXPORT GamePayload
     Q_GADGET
     Q_PROPERTY(QString gameId MEMBER gameId)
 public:
-    GamePayload(QString gameId_)
+    explicit GamePayload(QString gameId_)
         : gameId(std::move(gameId_))
     {}
     QString gameId;
@@ -48,6 +48,17 @@ public:
     {}
     QString streamTitle;
     int viewerCount;
+};
+
+class QTWITCHSHARED_EXPORT UserPayload
+{
+    Q_GADGET
+    Q_PROPERTY(QString userId MEMBER userId)
+public:
+    explicit UserPayload(QString userId_)
+        : userId(std::move(userId_))
+    {}
+    QString userId;
 };
 
 class QTWITCHSHARED_EXPORT FollowedChannelPayload

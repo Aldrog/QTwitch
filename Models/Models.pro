@@ -25,7 +25,9 @@ SOURCES += \
     topgamesmodel.cpp \
     streamsmodel.cpp \
     followedchannelsmodel.cpp \
-    gamessearchmodel.cpp
+    gamessearchmodel.cpp \
+    channelssearchmodel.cpp \
+    streamssearchmodel.cpp
 
 HEADERS += \
     abstractentitledimagesmodel.h \
@@ -36,6 +38,8 @@ HEADERS += \
     streamsmodel.h \
     followedchannelsmodel.h \
     gamessearchmodel.h \
+    channelssearchmodel.h \
+    streamssearchmodel.h \
     payloads.h
 
 unix {
