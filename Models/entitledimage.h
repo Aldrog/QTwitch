@@ -28,13 +28,12 @@ namespace Models {
 
 struct QTWITCHSHARED_EXPORT EntitledImage
 {
-    EntitledImage(QString _img, QString _title, QString _subtitle = QString())
-        : imageUrl(std::move(_img)), title(std::move(_title)), subtitle(std::move(_subtitle))
+    EntitledImage(QString _img, QString _title)
+        : imageUrl(std::move(_img)), title(std::move(_title))
     {}
 
     QString imageUrl;
     QString title;
-    QString subtitle;
 };
 
 }

@@ -35,6 +35,27 @@ void TopGamesModel::receiveData(const std::shared_ptr<Response> &response)
     auto data = std::unique_ptr<Helix::GamesList>(static_cast<Helix::GamesList*>(response->object.release()));
     updateCursor(data->pagination.cursor);
     for (const auto &game : data->data) {
-        storage.emplace_back( game.boxArtUrl, game.name );
+        storage.emplace_back( EntitledImage(game.boxArtUrl, game.name),
+                              TopGamesModelPayload(game.id) );
     }
+}
+
+QVariant TopGamesModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid())
+        return QVariant();
+
+    if (role < Qt::UserRole || role > static_cast<int>(Role::LastRole))
+        return QVariant();
+
+    switch (static_cast<Role>(role)) {
+    case Role::Image:
+        return storage[index.row()].img.imageUrl;
+    case Role::Title:
+        return storage[index.row()].img.title;
+    case Role::AdditionalData:
+        return QVariant::fromValue(&storage[index.row()].payload);
+    }
+
+    return QVariant();
 }

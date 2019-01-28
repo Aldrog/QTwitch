@@ -25,17 +25,43 @@
 namespace QTwitch {
 namespace Models {
 
-class TopGamesModel final : public HelixScrollableModel
+class QTWITCHSHARED_EXPORT TopGamesModelPayload
+{
+    Q_GADGET
+    Q_PROPERTY(QString gameId MEMBER gameId)
+public:
+    TopGamesModelPayload(QString gameId_)
+        : gameId(std::move(gameId_))
+    {}
+    QString gameId;
+};
+
+class QTWITCHSHARED_EXPORT TopGamesModel final : public HelixScrollableModel
 {
     Q_OBJECT
 public:
     explicit TopGamesModel(QObject *parent = nullptr);
+
+    QVariant data(const QModelIndex &index, int role) const final;
+
+    inline std::size_t storageSize() const final { return storage.size(); }
+    inline void resetStorage() final { storage.clear(); }
 
 protected:
     std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
 
 private:
     std::shared_ptr<Api::Helix::TopGamesRequest> request;
+
+    struct Data {
+        Data(EntitledImage img_, TopGamesModelPayload payload_)
+            : img(std::move(img_)), payload(std::move(payload_))
+        {}
+        EntitledImage img;
+        TopGamesModelPayload payload;
+    };
+
+    std::vector<Data> storage;
 
 private slots:
     void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response);

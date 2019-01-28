@@ -30,20 +30,20 @@ LegacyScrollableModel::LegacyScrollableModel(QObject *parent)
 void LegacyScrollableModel::next()
 {
     auto request = getRequest();
-    request->offset = storage.size();
+    request->offset = storageSize();
     QTwitch::Api::Client::getClient()->send(request);
 }
 
 bool LegacyScrollableModel::nextAvailable() const
 {
-    return storage.size() < totalCount;
+    return storageSize() < totalCount;
 }
 
 void LegacyScrollableModel::reload()
 {
     auto request = getRequest();
     request->offset.reset();
-    storage.clear();
+    resetStorage();
     QTwitch::Api::Client::getClient()->send(request);
 }
 

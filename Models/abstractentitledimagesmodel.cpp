@@ -31,34 +31,14 @@ int AbstractEntitledImagesModel::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
     else
-        return storage.size();
-}
-
-QVariant AbstractEntitledImagesModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    if (role < Qt::UserRole || role > static_cast<int>(Role::LastRole))
-        return QVariant();
-
-    switch (static_cast<Role>(role)) {
-    case Role::Image:
-        return storage[index.row()].imageUrl;
-    case Role::Title:
-        return storage[index.row()].title;
-    case Role::Subtitle:
-        return storage[index.row()].subtitle;
-    }
-
-    return QVariant();
+        return storageSize();
 }
 
 QHash<int, QByteArray> AbstractEntitledImagesModel::roleNames() const
 {
     return QHash<int, QByteArray>({
-                          { static_cast<int>(Role::Image),    "image" }
-                        , { static_cast<int>(Role::Title),    "title" }
-                        , { static_cast<int>(Role::Subtitle), "subtitle" }
+                          { static_cast<int>(Role::Image),          "image" }
+                        , { static_cast<int>(Role::Title),          "title" }
+                        , { static_cast<int>(Role::AdditionalData), "additionalData" }
                                   });
 }

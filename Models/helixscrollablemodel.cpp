@@ -46,7 +46,7 @@ void HelixScrollableModel::reload()
     pagingCursor.clear();
     request->after.reset();
     request->before.reset();
-    storage.clear();
+    resetStorage();
     QTwitch::Api::Client::getClient()->send(request);
 }
 
@@ -68,7 +68,11 @@ void HelixScrollableModel::setPageSize(int newSize)
 
 void HelixScrollableModel::resetPageSize()
 {
-    getRequest()->first.reset();
+    auto request = getRequest();
+    if (request->first) {
+        request->first.reset();
+        emit pageSizeChanged(0);
+    }
 }
 
 void HelixScrollableModel::updateCursor(const QString &cursor)

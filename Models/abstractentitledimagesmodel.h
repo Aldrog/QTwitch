@@ -36,29 +36,31 @@ public:
     enum class Role : int {
         Image = Qt::UserRole,
         Title,
-        Subtitle,
-        LastRole = Subtitle
+        AdditionalData, // Additional structure of model-specific data
+        LastRole = AdditionalData
     };
 
     explicit AbstractEntitledImagesModel(QObject *parent = nullptr);
 
-    int rowCount(const QModelIndex &parent) const override;
-    QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
-
-    virtual void next() = 0;
-    virtual bool nextAvailable() const = 0;
-    virtual void reload() = 0;
 
     virtual int pageSize() const = 0;
     virtual void setPageSize(int newSize) = 0;
     virtual void resetPageSize() = 0;
 
+    int rowCount(const QModelIndex &parent) const final;
+
+public slots:
+    virtual void next() = 0;
+    virtual bool nextAvailable() const = 0;
+    virtual void reload() = 0;
+
 signals:
     void pageSizeChanged(int newSize);
 
 protected:
-    std::vector<EntitledImage> storage;
+    virtual std::size_t storageSize() const = 0;
+    virtual void resetStorage() = 0;
 };
 
 }
