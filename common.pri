@@ -1,4 +1,11 @@
-CONFIG += c++17
+CXX11COMPATIBILITY = $$(CXX11COMPATIBILITY)
+isEmpty( CXX11COMPATIBILITY ) : {
+    CONFIG += c++17
+} else: {
+    warning("Enabling C++11 compatibility mode")
+    CONFIG += c++11
+}
+
 VERSION = 0.1
 
 INCLUDEPATH += $$PWD

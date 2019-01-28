@@ -184,7 +184,7 @@ void ApiTest::testCaseStreams()
 void ApiTest::testCaseVideos()
 {
     auto request = std::make_shared<Helix::VideosRequest>();
-    request->gameId = "68028";
+    request->gameId = QStringLiteral("68028");
     request->first = 24;
     request->sort = Helix::VideosRequest::Sorting::Trending;
 

@@ -106,10 +106,17 @@ std::unique_ptr<Object> PlaylistRequest::createResponseObject(const QByteArray &
         auto lineEnd = std::find(lineStart, data.end(), '\n');
         std::string_view line(lineStart, lineEnd-lineStart);
         if (startsWith(line, mediaPrefix)) {
-            pi = &result->playlist.emplace_back();
+            // C++11 compatibility
+            // pi = &result->playlist.emplace_back();
+            result->playlist.emplace_back();
+            pi = &result->playlist.back();
+
             line.remove_prefix(mediaPrefix.size() - 1);
             while (!line.empty()) {
-                auto [key, value] = extractKeyValue(line);
+                // C++11 compatibility
+                // auto [key, value]
+                std::string_view key, value;
+                std::tie (key, value) = extractKeyValue(line);
 
                 if (key == idKey)
                     pi->id = QString::fromUtf8(value.data()+1, value.size()-2);

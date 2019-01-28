@@ -191,7 +191,7 @@ void Client::verifyAuthorization()
             setAuthorizationStatus(AuthorizationStatus::Invalid);
             return;
         }
-        auto data = std::static_pointer_cast<ValidationData>(std::shared_ptr(move(responce->object)));
+        auto data = std::static_pointer_cast<ValidationData>(std::shared_ptr<Object>(move(responce->object)));
         credentials.userId = data->userId;
         credentialsStorage->writeCredentials(credentials);
         emit authorizationCompleted();
