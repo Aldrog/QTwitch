@@ -25,6 +25,7 @@
 
 namespace QTwitch {
 namespace Models {
+namespace Legacy {
 
 class LegacyScrollableModel : public AbstractEntitledImagesModel
 {
@@ -49,6 +50,7 @@ private:
     unsigned int totalCount = 0;
 };
 
+}
 }
 }
 

@@ -21,24 +21,12 @@
 #define STREAMSMODEL_H
 
 #include "helixscrollablemodel.h"
+#include "payloads.h"
 
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT StreamsModelPayload
-{
-    Q_GADGET
-    Q_PROPERTY(QString streamTitle MEMBER streamTitle)
-    Q_PROPERTY(int viewerCount MEMBER viewerCount)
-public:
-    StreamsModelPayload(QString title_, int viewers_)
-        : streamTitle(std::move(title_)), viewerCount(viewers_)
-    {}
-    QString streamTitle;
-    int viewerCount;
-};
-
-class QTWITCHSHARED_EXPORT StreamsModel : public HelixScrollableModel
+class QTWITCHSHARED_EXPORT StreamsModel final : public HelixScrollableModel
 {
     Q_OBJECT
     Q_PROPERTY(std::vector<QString> gameFilter READ gameFilter WRITE setGameFilter NOTIFY gameFilterChanged RESET resetGameFilter)
@@ -51,9 +39,6 @@ public:
 
     void setGameFilter(const std::vector<QString> &newGameFilter);
     void setLanguageFilter(const std::vector<QString> &newLanguageFilter);
-
-    inline std::size_t storageSize() const final { return storage.size(); }
-    inline void resetStorage() final { storage.clear(); }
 
     QVariant data(const QModelIndex &index, int role) const final;
 
@@ -68,15 +53,18 @@ signals:
 protected:
     inline std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
 
+    inline std::size_t storageSize() const final { return storage.size(); }
+    inline void resetStorage() final { storage.clear(); }
+
 private:
     std::shared_ptr<Api::Helix::StreamsRequest> request;
 
     struct Data {
-        Data(EntitledImage img_, StreamsModelPayload payload_)
+        Data(EntitledImage img_, StreamPayload payload_)
             : img(std::move(img_)), payload(std::move(payload_))
         {}
         EntitledImage img;
-        StreamsModelPayload payload;
+        StreamPayload payload;
     };
 
     std::vector<Data> storage;

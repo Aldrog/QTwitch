@@ -78,6 +78,6 @@ void FollowedChannelsModel::pushData()
                                           [&user](const Helix::StreamData &s) { return s.userId == user.id; });
         bool live = stream->type == QStringLiteral("live");
         storage.emplace_back( EntitledImage(live ? stream->thumbnailUrl : user.offlineImageUrl, user.displayName),
-                              FollowedChannelsModelPayload(live, stream->title, stream->viewerCount) );
+                              FollowedChannelPayload(live, stream->title, stream->viewerCount) );
     }
 }

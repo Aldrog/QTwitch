@@ -21,6 +21,7 @@
 #include <Api/client.h>
 
 using namespace QTwitch::Models;
+using namespace QTwitch::Api;
 
 HelixScrollableModel::HelixScrollableModel(QObject *parent)
     : AbstractEntitledImagesModel(parent)
@@ -32,7 +33,7 @@ void HelixScrollableModel::next()
     auto request = getRequest();
     request->after = pagingCursor;
     request->before.reset();
-    QTwitch::Api::Client::getClient()->send(request);
+    Client::getClient()->send(request);
 }
 
 bool HelixScrollableModel::nextAvailable() const
@@ -47,7 +48,7 @@ void HelixScrollableModel::reload()
     request->after.reset();
     request->before.reset();
     resetStorage();
-    QTwitch::Api::Client::getClient()->send(request);
+    Client::getClient()->send(request);
 }
 
 int HelixScrollableModel::pageSize() const

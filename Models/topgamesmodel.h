@@ -21,20 +21,10 @@
 #define TOPGAMESMODEL_H
 
 #include "helixscrollablemodel.h"
+#include "payloads.h"
 
 namespace QTwitch {
 namespace Models {
-
-class QTWITCHSHARED_EXPORT TopGamesModelPayload
-{
-    Q_GADGET
-    Q_PROPERTY(QString gameId MEMBER gameId)
-public:
-    TopGamesModelPayload(QString gameId_)
-        : gameId(std::move(gameId_))
-    {}
-    QString gameId;
-};
 
 class QTWITCHSHARED_EXPORT TopGamesModel final : public HelixScrollableModel
 {
@@ -44,21 +34,21 @@ public:
 
     QVariant data(const QModelIndex &index, int role) const final;
 
-    inline std::size_t storageSize() const final { return storage.size(); }
-    inline void resetStorage() final { storage.clear(); }
-
 protected:
     inline std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
+
+    inline std::size_t storageSize() const final { return storage.size(); }
+    inline void resetStorage() final { storage.clear(); }
 
 private:
     std::shared_ptr<Api::Helix::TopGamesRequest> request;
 
     struct Data {
-        Data(EntitledImage img_, TopGamesModelPayload payload_)
+        Data(EntitledImage img_, GamePayload payload_)
             : img(std::move(img_)), payload(std::move(payload_))
         {}
         EntitledImage img;
-        TopGamesModelPayload payload;
+        GamePayload payload;
     };
 
     std::vector<Data> storage;

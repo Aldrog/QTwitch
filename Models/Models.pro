@@ -33,7 +33,8 @@ HEADERS += \
     legacyscrollablemodel.h \
     topgamesmodel.h \
     streamsmodel.h \
-    followedchannelsmodel.h
+    followedchannelsmodel.h \
+    payloads.h
 
 unix {
     target.path = /usr/lib

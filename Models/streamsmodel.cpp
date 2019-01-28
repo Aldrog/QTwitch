@@ -78,7 +78,7 @@ void StreamsModel::receiveData(const std::shared_ptr<Response> &response)
     updateCursor(data->pagination.cursor);
     for (const auto &stream : data->data) {
         storage.emplace_back( EntitledImage(stream.thumbnailUrl, stream.userName),
-                              StreamsModelPayload(stream.title, stream.viewerCount) );
+                              StreamPayload(stream.title, stream.viewerCount) );
     }
 }
 

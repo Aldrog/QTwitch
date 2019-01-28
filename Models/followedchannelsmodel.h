@@ -21,38 +21,24 @@
 #define FOLLOWEDCHANNELSMODEL_H
 
 #include "helixscrollablemodel.h"
+#include "payloads.h"
 
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT FollowedChannelsModelPayload
-{
-    Q_GADGET
-    Q_PROPERTY(QString streamTitle MEMBER streamTitle)
-    Q_PROPERTY(int viewerCount MEMBER viewerCount)
-public:
-    FollowedChannelsModelPayload(bool live_, QString title_, int viewers_)
-        : streamTitle(std::move(title_)), viewerCount(viewers_), live(live_)
-    {}
-    QString streamTitle;
-    int viewerCount;
-    bool live;
-};
-
-
-class QTWITCHSHARED_EXPORT FollowedChannelsModel : public HelixScrollableModel
+class QTWITCHSHARED_EXPORT FollowedChannelsModel final : public HelixScrollableModel
 {
     Q_OBJECT
 public:
     explicit FollowedChannelsModel(QObject *parent = nullptr);
 
-    inline std::size_t storageSize() const final { return storage.size(); }
-    inline void resetStorage() final { storage.clear(); }
-
     QVariant data(const QModelIndex &index, int role) const final;
 
 protected:
     inline std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
+
+    inline std::size_t storageSize() const final { return storage.size(); }
+    inline void resetStorage() final { storage.clear(); }
 
 private:
     std::shared_ptr<Api::Helix::UserFollowsRequest> request;
@@ -60,11 +46,11 @@ private:
     std::shared_ptr<Api::Helix::StreamsRequest> streamsRequest;
 
     struct Data {
-        Data(EntitledImage img_, FollowedChannelsModelPayload payload_)
+        Data(EntitledImage img_, FollowedChannelPayload payload_)
             : img(std::move(img_)), payload(std::move(payload_))
         {}
         EntitledImage img;
-        FollowedChannelsModelPayload payload;
+        FollowedChannelPayload payload;
     };
 
     std::vector<Data> storage;

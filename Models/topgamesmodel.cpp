@@ -36,7 +36,7 @@ void TopGamesModel::receiveData(const std::shared_ptr<Response> &response)
     updateCursor(data->pagination.cursor);
     for (const auto &game : data->data) {
         storage.emplace_back( EntitledImage(game.boxArtUrl, game.name),
-                              TopGamesModelPayload(game.id) );
+                              GamePayload(game.id) );
     }
 }
 

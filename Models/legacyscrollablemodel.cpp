@@ -21,6 +21,8 @@
 #include <Api/client.h>
 
 using namespace QTwitch::Models;
+using namespace QTwitch::Models::Legacy;
+using namespace QTwitch::Api;
 
 LegacyScrollableModel::LegacyScrollableModel(QObject *parent)
     : AbstractEntitledImagesModel(parent)
@@ -31,7 +33,7 @@ void LegacyScrollableModel::next()
 {
     auto request = getRequest();
     request->offset = storageSize();
-    QTwitch::Api::Client::getClient()->send(request);
+    Client::getClient()->send(request);
 }
 
 bool LegacyScrollableModel::nextAvailable() const
@@ -44,7 +46,7 @@ void LegacyScrollableModel::reload()
     auto request = getRequest();
     request->offset.reset();
     resetStorage();
-    QTwitch::Api::Client::getClient()->send(request);
+    Client::getClient()->send(request);
 }
 
 int LegacyScrollableModel::pageSize() const
