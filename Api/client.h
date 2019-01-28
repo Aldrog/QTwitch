@@ -99,6 +99,8 @@ public:
 
     AuthorizationStatus authorizationStatus = AuthorizationStatus::NotAuthorized;
 
+    inline QString getUserId() const { return credentials.userId; }
+
     static std::shared_ptr<Client> getClient();
 
 public slots:

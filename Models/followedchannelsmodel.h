@@ -17,75 +17,69 @@
  * along with QTwitch.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef STREAMSMODEL_H
-#define STREAMSMODEL_H
+#ifndef FOLLOWEDCHANNELSMODEL_H
+#define FOLLOWEDCHANNELSMODEL_H
 
 #include "helixscrollablemodel.h"
 
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT StreamsModelPayload
+class QTWITCHSHARED_EXPORT FollowedChannelsModelPayload
 {
     Q_GADGET
     Q_PROPERTY(QString streamTitle MEMBER streamTitle)
     Q_PROPERTY(int viewerCount MEMBER viewerCount)
 public:
-    StreamsModelPayload(QString title_, int viewers_)
-        : streamTitle(std::move(title_)), viewerCount(viewers_)
+    FollowedChannelsModelPayload(bool live_, QString title_, int viewers_)
+        : streamTitle(std::move(title_)), viewerCount(viewers_), live(live_)
     {}
     QString streamTitle;
     int viewerCount;
+    bool live;
 };
 
-class QTWITCHSHARED_EXPORT StreamsModel : public HelixScrollableModel
+
+class QTWITCHSHARED_EXPORT FollowedChannelsModel : public HelixScrollableModel
 {
     Q_OBJECT
-    Q_PROPERTY(std::vector<QString> gameFilter READ gameFilter WRITE setGameFilter NOTIFY gameFilterChanged RESET resetGameFilter)
-    Q_PROPERTY(std::vector<QString> languageFilter READ languageFilter WRITE setLanguageFilter NOTIFY languageFilterChanged RESET resetLanguageFilter)
 public:
-    explicit StreamsModel(QObject *parent = nullptr);
-
-    std::vector<QString> gameFilter() const;
-    std::vector<QString> languageFilter() const;
-
-    void setGameFilter(const std::vector<QString> &newGameFilter);
-    void setLanguageFilter(const std::vector<QString> &newLanguageFilter);
+    explicit FollowedChannelsModel(QObject *parent = nullptr);
 
     inline std::size_t storageSize() const final { return storage.size(); }
     inline void resetStorage() final { storage.clear(); }
 
     QVariant data(const QModelIndex &index, int role) const final;
 
-public slots:
-    void resetGameFilter();
-    void resetLanguageFilter();
-
-signals:
-    void gameFilterChanged(const std::vector<QString> &newGameFilter);
-    void languageFilterChanged(const std::vector<QString> &newLanguageFilter);
-
 protected:
     inline std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
 
 private:
-    std::shared_ptr<Api::Helix::StreamsRequest> request;
+    std::shared_ptr<Api::Helix::UserFollowsRequest> request;
+    std::shared_ptr<Api::Helix::UsersRequest> usersRequest;
+    std::shared_ptr<Api::Helix::StreamsRequest> streamsRequest;
 
     struct Data {
-        Data(EntitledImage img_, StreamsModelPayload payload_)
+        Data(EntitledImage img_, FollowedChannelsModelPayload payload_)
             : img(std::move(img_)), payload(std::move(payload_))
         {}
         EntitledImage img;
-        StreamsModelPayload payload;
+        FollowedChannelsModelPayload payload;
     };
 
     std::vector<Data> storage;
 
+    std::shared_ptr<QTwitch::Api::Response> usersResponse;
+    std::shared_ptr<QTwitch::Api::Response> streamsResponse;
+
 private slots:
-    void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response);
+    void receiveFollows(const std::shared_ptr<QTwitch::Api::Response> &response);
+    void receiveUsers(const std::shared_ptr<QTwitch::Api::Response> &response);
+    void receiveStreams(const std::shared_ptr<QTwitch::Api::Response> &response);
+    void pushData();
 };
 
 }
 }
 
-#endif // STREAMSMODEL_H
+#endif // FOLLOWEDCHANNELSMODEL_H

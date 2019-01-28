@@ -23,7 +23,8 @@ SOURCES += \
     helixscrollablemodel.cpp \
     legacyscrollablemodel.cpp \
     topgamesmodel.cpp \
-    streamsmodel.cpp
+    streamsmodel.cpp \
+    followedchannelsmodel.cpp
 
 HEADERS += \
     abstractentitledimagesmodel.h \
@@ -31,7 +32,8 @@ HEADERS += \
     helixscrollablemodel.h \
     legacyscrollablemodel.h \
     topgamesmodel.h \
-    streamsmodel.h
+    streamsmodel.h \
+    followedchannelsmodel.h
 
 unix {
     target.path = /usr/lib

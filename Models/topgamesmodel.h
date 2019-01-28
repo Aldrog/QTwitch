@@ -48,7 +48,7 @@ public:
     inline void resetStorage() final { storage.clear(); }
 
 protected:
-    std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
+    inline std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
 
 private:
     std::shared_ptr<Api::Helix::TopGamesRequest> request;
