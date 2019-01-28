@@ -24,7 +24,8 @@ SOURCES += \
     legacyscrollablemodel.cpp \
     topgamesmodel.cpp \
     streamsmodel.cpp \
-    followedchannelsmodel.cpp
+    followedchannelsmodel.cpp \
+    gamessearchmodel.cpp
 
 HEADERS += \
     abstractentitledimagesmodel.h \
@@ -34,6 +35,7 @@ HEADERS += \
     topgamesmodel.h \
     streamsmodel.h \
     followedchannelsmodel.h \
+    gamessearchmodel.h \
     payloads.h
 
 unix {
