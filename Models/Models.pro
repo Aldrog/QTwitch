@@ -22,14 +22,16 @@ SOURCES += \
     abstractentitledimagesmodel.cpp \
     helixscrollablemodel.cpp \
     legacyscrollablemodel.cpp \
-    topgamesmodel.cpp
+    topgamesmodel.cpp \
+    streamsmodel.cpp
 
 HEADERS += \
     abstractentitledimagesmodel.h \
     entitledimage.h \
     helixscrollablemodel.h \
     legacyscrollablemodel.h \
-    topgamesmodel.h
+    topgamesmodel.h \
+    streamsmodel.h
 
 unix {
     target.path = /usr/lib
