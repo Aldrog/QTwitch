@@ -78,7 +78,10 @@ void StreamsModel::receiveData(const std::shared_ptr<Response> &response)
     updateCursor(data->pagination.cursor);
     beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->data.size() - 1);
     for (const auto &stream : data->data) {
-        storage.emplace_back( EntitledImage(stream.thumbnailUrl, stream.userName),
+        QString imgUrl = stream.thumbnailUrl;
+        imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
+        imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight));
+        storage.emplace_back( EntitledImage(imgUrl, stream.userName),
                               StreamPayload(stream.title, stream.viewerCount) );
     }
     endInsertRows();

@@ -61,7 +61,10 @@ void StreamsSearchModel::receiveData(const std::shared_ptr<Response> &response)
     updateTotal(data->total);
     beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->streams.size() - 1);
     for (const auto &stream : data->streams) {
-        storage.emplace_back( EntitledImage(stream.preview.largeUrl, stream.channel.displayName),
+        QString imgUrl = stream.preview.templateUrl;
+        imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
+        imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight));
+        storage.emplace_back( EntitledImage(imgUrl, stream.channel.displayName),
                               StreamPayload(stream.channel.status, stream.viewers) );
     }
     endInsertRows();

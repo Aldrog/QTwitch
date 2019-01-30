@@ -104,10 +104,16 @@ void FollowedChannelsModel::pushData()
         if (stream != streams->data.end())
             live = stream->type == QStringLiteral("live");
 
-        storage.emplace_back( EntitledImage(live ? stream->thumbnailUrl : user.offlineImageUrl, user.displayName),
-                              FollowedChannelPayload(live,
-                                                     live ? stream->title : QString(),
-                                                     live ? stream->viewerCount : 0) );
+        if (live) {
+            QString imgUrl = stream->thumbnailUrl;
+            imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
+            imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight));
+            storage.emplace_back( EntitledImage(imgUrl, user.displayName),
+                                  FollowedChannelPayload(live, stream->title, stream->viewerCount) );
+        } else {
+            storage.emplace_back( EntitledImage(user.offlineImageUrl, user.displayName),
+                                  FollowedChannelPayload(live, QString(), 0) );
+        }
     }
     endInsertRows();
 }

@@ -36,7 +36,10 @@ void TopGamesModel::receiveData(const std::shared_ptr<Response> &response)
     updateCursor(data->pagination.cursor);
     beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->data.size() - 1);
     for (const auto &game : data->data) {
-        storage.emplace_back( EntitledImage(game.boxArtUrl, game.name),
+        QString imgUrl = game.boxArtUrl;
+        imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
+        imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight));
+        storage.emplace_back( EntitledImage(imgUrl, game.name),
                               GamePayload(game.id) );
     }
     endInsertRows();
