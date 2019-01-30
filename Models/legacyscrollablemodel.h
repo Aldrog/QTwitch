@@ -44,7 +44,7 @@ public:
 protected:
     virtual std::shared_ptr<Api::v5::LegacyPagedRequest> getRequest() const = 0;
 
-    void updateTotal(int total);
+    void updateTotal(int total) { totalCount = total; }
 
 private:
     unsigned int totalCount = 0;

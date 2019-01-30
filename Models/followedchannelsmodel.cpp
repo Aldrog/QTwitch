@@ -38,6 +38,26 @@ FollowedChannelsModel::FollowedChannelsModel(QObject *parent)
     reload();
 }
 
+QVariant FollowedChannelsModel::data(const QModelIndex &index, int role) const
+{
+    if (!index.isValid())
+        return QVariant();
+
+    if (role < Qt::UserRole || role > static_cast<int>(Role::LastRole))
+        return QVariant();
+
+    switch (static_cast<Role>(role)) {
+    case Role::Image:
+        return storage[index.row()].img.imageUrl;
+    case Role::Title:
+        return storage[index.row()].img.title;
+    case Role::AdditionalData:
+        return QVariant::fromValue(storage[index.row()].payload);
+    }
+
+    return QVariant();
+}
+
 void FollowedChannelsModel::receiveFollows(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<Helix::FollowsList>(static_cast<Helix::FollowsList*>(response->object.release()));

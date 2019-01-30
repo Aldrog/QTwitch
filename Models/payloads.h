@@ -31,6 +31,9 @@ class QTWITCHSHARED_EXPORT GamePayload
     Q_GADGET
     Q_PROPERTY(QString gameId MEMBER gameId)
 public:
+    GamePayload()
+        : gameId(QString())
+    {}
     explicit GamePayload(QString gameId_)
         : gameId(std::move(gameId_))
     {}
@@ -43,6 +46,9 @@ class QTWITCHSHARED_EXPORT StreamPayload
     Q_PROPERTY(QString streamTitle MEMBER streamTitle)
     Q_PROPERTY(int viewerCount MEMBER viewerCount)
 public:
+    StreamPayload()
+        : streamTitle(QString()), viewerCount(0)
+    {}
     StreamPayload(QString title_, int viewers_)
         : streamTitle(std::move(title_)), viewerCount(viewers_)
     {}
@@ -55,6 +61,9 @@ class QTWITCHSHARED_EXPORT UserPayload
     Q_GADGET
     Q_PROPERTY(QString userId MEMBER userId)
 public:
+    UserPayload()
+        : userId(QString())
+    {}
     explicit UserPayload(QString userId_)
         : userId(std::move(userId_))
     {}
@@ -67,6 +76,9 @@ class QTWITCHSHARED_EXPORT FollowedChannelPayload
     Q_PROPERTY(QString streamTitle MEMBER streamTitle)
     Q_PROPERTY(int viewerCount MEMBER viewerCount)
 public:
+    FollowedChannelPayload()
+        : streamTitle(QString()), viewerCount(0), live(false)
+    {}
     FollowedChannelPayload(bool live_, QString title_, int viewers_)
         : streamTitle(std::move(title_)), viewerCount(viewers_), live(live_)
     {}
@@ -77,5 +89,10 @@ public:
 
 }
 }
+
+Q_DECLARE_METATYPE(QTwitch::Models::GamePayload)
+Q_DECLARE_METATYPE(QTwitch::Models::StreamPayload)
+Q_DECLARE_METATYPE(QTwitch::Models::UserPayload)
+Q_DECLARE_METATYPE(QTwitch::Models::FollowedChannelPayload)
 
 #endif // PAYLOADS_H

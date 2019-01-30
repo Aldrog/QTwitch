@@ -54,7 +54,7 @@ QVariant TopGamesModel::data(const QModelIndex &index, int role) const
     case Role::Title:
         return storage[index.row()].img.title;
     case Role::AdditionalData:
-        return QVariant::fromValue(&storage[index.row()].payload);
+        return QVariant::fromValue(storage[index.row()].payload);
     }
 
     return QVariant();
