@@ -34,10 +34,12 @@ void TopGamesModel::receiveData(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<Helix::GamesList>(static_cast<Helix::GamesList*>(response->object.release()));
     updateCursor(data->pagination.cursor);
+    beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->data.size() - 1);
     for (const auto &game : data->data) {
         storage.emplace_back( EntitledImage(game.boxArtUrl, game.name),
                               GamePayload(game.id) );
     }
+    endInsertRows();
 }
 
 QVariant TopGamesModel::data(const QModelIndex &index, int role) const

@@ -47,7 +47,11 @@ void HelixScrollableModel::reload()
     pagingCursor.clear();
     request->after.reset();
     request->before.reset();
-    resetStorage();
+    if (storageSize() != 0) {
+        beginRemoveRows(QModelIndex(), 0, storageSize() - 1);
+        resetStorage();
+        endRemoveRows();
+    }
     Client::getClient()->send(request);
 }
 

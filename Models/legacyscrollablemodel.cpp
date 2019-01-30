@@ -45,7 +45,11 @@ void LegacyScrollableModel::reload()
 {
     auto request = getRequest();
     request->offset.reset();
-    resetStorage();
+    if (storageSize() != 0) {
+        beginRemoveRows(QModelIndex(), 0, storageSize() - 1);
+        resetStorage();
+        endRemoveRows();
+    }
     Client::getClient()->send(request);
 }
 

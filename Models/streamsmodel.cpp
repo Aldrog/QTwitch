@@ -76,10 +76,12 @@ void StreamsModel::receiveData(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<Helix::StreamsList>(static_cast<Helix::StreamsList*>(response->object.release()));
     updateCursor(data->pagination.cursor);
+    beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->data.size() - 1);
     for (const auto &stream : data->data) {
         storage.emplace_back( EntitledImage(stream.thumbnailUrl, stream.userName),
                               StreamPayload(stream.title, stream.viewerCount) );
     }
+    endInsertRows();
 }
 
 QVariant StreamsModel::data(const QModelIndex &index, int role) const

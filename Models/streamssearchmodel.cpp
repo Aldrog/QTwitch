@@ -56,10 +56,12 @@ void StreamsSearchModel::receiveData(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<v5::StreamsList>(static_cast<v5::StreamsList*>(response->object.release()));
     updateTotal(data->total);
+    beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->streams.size() - 1);
     for (const auto &stream : data->streams) {
         storage.emplace_back( EntitledImage(stream.preview.largeUrl, stream.channel.displayName),
                               StreamPayload(stream.channel.status, stream.viewers) );
     }
+    endInsertRows();
 }
 
 QString StreamsSearchModel::query() const

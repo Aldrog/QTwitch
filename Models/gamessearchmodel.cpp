@@ -61,10 +61,12 @@ void GamesSearchModel::reload()
 void GamesSearchModel::receiveData(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<v5::GamesList>(static_cast<v5::GamesList*>(response->object.release()));
+    beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->games.size() - 1);
     for (const auto &game : data->games) {
         storage.emplace_back( EntitledImage(game.logo.largeUrl, game.name),
                               GamePayload(QString::number(game.id)) );
     }
+    endInsertRows();
 }
 
 QString GamesSearchModel::query() const

@@ -93,11 +93,18 @@ void FollowedChannelsModel::pushData()
     auto streams = std::unique_ptr<Helix::StreamsList>(static_cast<Helix::StreamsList*>(streamsResponse->object.release()));
     usersResponse.reset();
     streamsResponse.reset();
+    beginInsertRows(QModelIndex(), storageSize(), storageSize() + users->data.size() - 1);
     for (const auto &user : users->data) {
         const auto &stream = std::find_if(streams->data.begin(), streams->data.end(),
                                           [&user](const Helix::StreamData &s) { return s.userId == user.id; });
-        bool live = stream->type == QStringLiteral("live");
+        bool live = false;
+        if (stream != streams->data.end())
+            live = stream->type == QStringLiteral("live");
+
         storage.emplace_back( EntitledImage(live ? stream->thumbnailUrl : user.offlineImageUrl, user.displayName),
-                              FollowedChannelPayload(live, stream->title, stream->viewerCount) );
+                              FollowedChannelPayload(live,
+                                                     live ? stream->title : QString(),
+                                                     live ? stream->viewerCount : 0) );
     }
+    endInsertRows();
 }
