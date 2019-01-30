@@ -37,6 +37,9 @@ QVariant StreamsSearchModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
+    if (index.row() < 0 || static_cast<unsigned int>(index.row()) >= storageSize())
+        return QVariant();
+
     if (role < Qt::UserRole || role > static_cast<int>(Role::LastRole))
         return QVariant();
 
