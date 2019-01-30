@@ -43,7 +43,8 @@ HEADERS += \
     payloads.h
 
 unix {
-    target.path = /usr/lib
+    isEmpty(INSTALL_PREFIX): INSTALL_PREFIX = /usr
+    target.path = $$INSTALL_PREFIX/lib
     INSTALLS += target
 }
 

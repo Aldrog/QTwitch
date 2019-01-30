@@ -2,8 +2,11 @@ TEMPLATE = subdirs
 
 SUBDIRS = \
     Api \
-    Models \
-    tests
+    Models
+
+isEmpty(SKIP_TESTS): {
+    SUBDIRS += tests
+}
 
 analyze.target = pvs_studio
 analyze.CONFIG = recursive
