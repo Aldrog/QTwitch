@@ -27,7 +27,7 @@ namespace QTwitch {
 namespace Models {
 namespace Legacy {
 
-class ChannelsSearchModel final : public LegacyScrollableModel
+class QTWITCHSHARED_EXPORT ChannelsSearchModel : public LegacyScrollableModel
 {
     Q_OBJECT
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged RESET resetQuery)

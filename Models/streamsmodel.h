@@ -26,7 +26,7 @@
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT StreamsModel final : public HelixScrollableModel
+class QTWITCHSHARED_EXPORT StreamsModel : public HelixScrollableModel
 {
     Q_OBJECT
     Q_PROPERTY(std::vector<QString> gameFilter READ gameFilter WRITE setGameFilter NOTIFY gameFilterChanged RESET resetGameFilter)

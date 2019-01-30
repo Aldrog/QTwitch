@@ -26,7 +26,7 @@
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT FollowedChannelsModel final : public HelixScrollableModel
+class QTWITCHSHARED_EXPORT FollowedChannelsModel : public HelixScrollableModel
 {
     Q_OBJECT
 public:

@@ -28,7 +28,7 @@ namespace QTwitch {
 namespace Models {
 namespace Legacy {
 
-class GamesSearchModel final : public AbstractEntitledImagesModel
+class QTWITCHSHARED_EXPORT GamesSearchModel : public AbstractEntitledImagesModel
 {
     Q_OBJECT
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged RESET resetQuery)

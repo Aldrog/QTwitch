@@ -26,7 +26,7 @@
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT TopGamesModel final : public HelixScrollableModel
+class QTWITCHSHARED_EXPORT TopGamesModel : public HelixScrollableModel
 {
     Q_OBJECT
 public:
