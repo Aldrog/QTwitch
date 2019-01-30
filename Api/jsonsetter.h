@@ -72,7 +72,7 @@ private:
         auto result = std::make_unique<ResponseObjectType>(); \
         JsonSetter visitor(QJsonDocument::fromJson(data).object()); \
         result->accept(visitor); \
-        return result; \
+        return std::move(result); \
     }
 
 #endif // JSONSETTER_H

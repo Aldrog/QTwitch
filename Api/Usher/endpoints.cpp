@@ -133,5 +133,5 @@ std::unique_ptr<Object> PlaylistRequest::createResponseObject(const QByteArray &
 
         lineStart = lineEnd;
     }
-    return result;
+    return std::move(result);
 }
