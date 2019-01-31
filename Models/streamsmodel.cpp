@@ -27,7 +27,6 @@ StreamsModel::StreamsModel(QObject *parent)
 {
     request = std::make_shared<Helix::StreamsRequest>();
     connect(request.get(), &Request::responseReceived, this, &StreamsModel::receiveData);
-    reload();
 }
 
 QStringList StreamsModel::gameFilter() const

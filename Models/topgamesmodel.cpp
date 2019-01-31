@@ -27,7 +27,6 @@ TopGamesModel::TopGamesModel(QObject *parent)
 {
     request = std::make_shared<Helix::TopGamesRequest>();
     connect(request.get(), &Request::responseReceived, this, &TopGamesModel::receiveData);
-    reload();
 }
 
 void TopGamesModel::receiveData(const std::shared_ptr<Response> &response)

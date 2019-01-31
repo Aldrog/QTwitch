@@ -29,7 +29,6 @@ StreamsSearchModel::StreamsSearchModel(QObject *parent)
 {
     request = std::make_shared<v5::SearchStreamsRequest>();
     connect(request.get(), &Request::responseReceived, this, &StreamsSearchModel::receiveData);
-    reload();
 }
 
 QVariant StreamsSearchModel::data(const QModelIndex &index, int role) const

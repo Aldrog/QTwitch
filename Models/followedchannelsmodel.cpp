@@ -35,7 +35,6 @@ FollowedChannelsModel::FollowedChannelsModel(QObject *parent)
 
     streamsRequest = std::make_shared<Helix::StreamsRequest>();
     connect(streamsRequest.get(), &Request::responseReceived, this, &FollowedChannelsModel::receiveStreams);
-    reload();
 }
 
 QVariant FollowedChannelsModel::data(const QModelIndex &index, int role) const

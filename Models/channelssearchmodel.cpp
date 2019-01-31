@@ -29,7 +29,6 @@ ChannelsSearchModel::ChannelsSearchModel(QObject *parent)
 {
     request = std::make_shared<v5::SearchChannelsRequest>();
     connect(request.get(), &Request::responseReceived, this, &ChannelsSearchModel::receiveData);
-    reload();
 }
 
 QVariant ChannelsSearchModel::data(const QModelIndex &index, int role) const

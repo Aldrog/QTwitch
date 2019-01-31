@@ -29,7 +29,6 @@ GamesSearchModel::GamesSearchModel(QObject *parent)
 {
     request = std::make_shared<v5::SearchGamesRequest>();
     connect(request.get(), &Request::responseReceived, this, &GamesSearchModel::receiveData);
-    reload();
 }
 
 QVariant GamesSearchModel::data(const QModelIndex &index, int role) const
