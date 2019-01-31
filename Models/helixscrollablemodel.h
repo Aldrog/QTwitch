@@ -32,13 +32,13 @@ class HelixScrollableModel : public AbstractEntitledImagesModel
 public:
     explicit HelixScrollableModel(QObject *parent = nullptr);
 
-    void next() override;
-    bool nextAvailable() const override;
-    void reload() override;
-
     int pageSize() const override;
     void setPageSize(int newSize) override;
     void resetPageSize() override;
+
+    bool nextAvailable() const override;
+    void next() override;
+    void reload() override;
 
 protected:
     virtual std::shared_ptr<Api::Helix::PagedRequest> getRequest() const = 0;

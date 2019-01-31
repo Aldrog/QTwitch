@@ -51,6 +51,8 @@ public:
     virtual void setPageSize(int newSize) = 0;
     virtual void resetPageSize() = 0;
 
+    Q_INVOKABLE virtual bool nextAvailable() const = 0;
+
     int rowCount(const QModelIndex &parent) const final;
 
     int imageWidth = 480;
@@ -58,7 +60,6 @@ public:
 
 public slots:
     virtual void next() = 0;
-    virtual bool nextAvailable() const = 0;
     virtual void reload() = 0;
 
 signals:

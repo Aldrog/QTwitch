@@ -30,30 +30,38 @@ StreamsModel::StreamsModel(QObject *parent)
     reload();
 }
 
-std::vector<QString> StreamsModel::gameFilter() const
+QStringList StreamsModel::gameFilter() const
 {
-    return request->gameId;
+    QStringList result;
+    for (const auto i : request->gameId)
+        result.append(i);
+    return result;
 }
 
-std::vector<QString> StreamsModel::languageFilter() const
+QStringList StreamsModel::languageFilter() const
 {
-    return request->language;
+    QStringList result;
+    for (const auto i : request->language)
+        result.append(i);
+    return result;
 }
 
-void StreamsModel::setGameFilter(const std::vector<QString> &newGameFilter)
+void StreamsModel::setGameFilter(const QStringList &newGameFilter)
 {
-    if (newGameFilter != request->gameId) {
-        request->gameId = newGameFilter;
-        emit gameFilterChanged(newGameFilter);
-    }
+    request->gameId.clear();
+    request->gameId.reserve(newGameFilter.size());
+    for (const auto i : newGameFilter)
+        request->gameId.push_back(i);
+    emit gameFilterChanged(newGameFilter);
 }
 
-void StreamsModel::setLanguageFilter(const std::vector<QString> &newLanguageFilter)
+void StreamsModel::setLanguageFilter(const QStringList &newLanguageFilter)
 {
-    if (newLanguageFilter != request->gameId) {
-        request->language = newLanguageFilter;
-        emit languageFilterChanged(newLanguageFilter);
-    }
+    request->language.clear();
+    request->language.reserve(newLanguageFilter.size());
+    for (const auto i : newLanguageFilter)
+        request->language.push_back(i);
+    emit languageFilterChanged(newLanguageFilter);
 }
 
 void StreamsModel::resetGameFilter()

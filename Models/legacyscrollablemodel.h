@@ -33,13 +33,13 @@ class LegacyScrollableModel : public AbstractEntitledImagesModel
 public:
     explicit LegacyScrollableModel(QObject *parent = nullptr);
 
-    void next() override;
-    bool nextAvailable() const override;
-    void reload() override;
-
     int pageSize() const override;
     void setPageSize(int newSize) override;
     void resetPageSize() override;
+
+    bool nextAvailable() const override;
+    void next() override;
+    void reload() override;
 
 protected:
     virtual std::shared_ptr<Api::v5::LegacyPagedRequest> getRequest() const = 0;

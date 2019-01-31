@@ -29,16 +29,16 @@ namespace Models {
 class QTWITCHSHARED_EXPORT StreamsModel : public HelixScrollableModel
 {
     Q_OBJECT
-    Q_PROPERTY(std::vector<QString> gameFilter READ gameFilter WRITE setGameFilter NOTIFY gameFilterChanged RESET resetGameFilter)
-    Q_PROPERTY(std::vector<QString> languageFilter READ languageFilter WRITE setLanguageFilter NOTIFY languageFilterChanged RESET resetLanguageFilter)
+    Q_PROPERTY(QStringList gameFilter READ gameFilter WRITE setGameFilter NOTIFY gameFilterChanged RESET resetGameFilter)
+    Q_PROPERTY(QStringList languageFilter READ languageFilter WRITE setLanguageFilter NOTIFY languageFilterChanged RESET resetLanguageFilter)
 public:
     explicit StreamsModel(QObject *parent = nullptr);
 
-    std::vector<QString> gameFilter() const;
-    std::vector<QString> languageFilter() const;
+    QStringList gameFilter() const;
+    QStringList languageFilter() const;
 
-    void setGameFilter(const std::vector<QString> &newGameFilter);
-    void setLanguageFilter(const std::vector<QString> &newLanguageFilter);
+    void setGameFilter(const QStringList &newGameFilter);
+    void setLanguageFilter(const QStringList &newLanguageFilter);
 
     QVariant data(const QModelIndex &index, int role) const final;
 
@@ -47,8 +47,8 @@ public slots:
     void resetLanguageFilter();
 
 signals:
-    void gameFilterChanged(const std::vector<QString> &newGameFilter);
-    void languageFilterChanged(const std::vector<QString> &newLanguageFilter);
+    void gameFilterChanged(const QStringList &newGameFilter);
+    void languageFilterChanged(const QStringList &newLanguageFilter);
 
 protected:
     inline std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
