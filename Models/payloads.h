@@ -45,14 +45,16 @@ class QTWITCHSHARED_EXPORT StreamPayload
     Q_GADGET
     Q_PROPERTY(QString streamTitle MEMBER streamTitle)
     Q_PROPERTY(int viewerCount MEMBER viewerCount)
+    Q_PROPERTY(QString userId MEMBER userId)
 public:
     StreamPayload()
-        : streamTitle(QString()), viewerCount(0)
+        : streamTitle(QString()), userId(QString()), viewerCount(0)
     {}
-    StreamPayload(QString title_, int viewers_)
-        : streamTitle(std::move(title_)), viewerCount(viewers_)
+    StreamPayload(QString title_, int viewers_, QString userId_)
+        : streamTitle(std::move(title_)), userId(std::move(userId_)), viewerCount(viewers_)
     {}
     QString streamTitle;
+    QString userId;
     int viewerCount;
 };
 
@@ -75,6 +77,7 @@ class QTWITCHSHARED_EXPORT FollowedChannelPayload
     Q_GADGET
     Q_PROPERTY(QString streamTitle MEMBER streamTitle)
     Q_PROPERTY(int viewerCount MEMBER viewerCount)
+    Q_PROPERTY(bool live MEMBER live)
 public:
     FollowedChannelPayload()
         : streamTitle(QString()), viewerCount(0), live(false)

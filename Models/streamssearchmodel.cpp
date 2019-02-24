@@ -64,7 +64,7 @@ void StreamsSearchModel::receiveData(const std::shared_ptr<Response> &response)
         imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
         imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight));
         storage.emplace_back( EntitledImage(imgUrl, stream.channel.displayName),
-                              StreamPayload(stream.channel.status, stream.viewers) );
+                              StreamPayload(stream.channel.status, stream.viewers, QString::number(stream.channel.id)) );
     }
     endInsertRows();
 }
