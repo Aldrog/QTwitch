@@ -24,6 +24,7 @@ using namespace QTwitch::Models;
 AbstractEntitledImagesModel::AbstractEntitledImagesModel(QObject *parent)
     : QAbstractListModel(parent)
 {
+    connect(this, &AbstractEntitledImagesModel::imageWidthChanged, this, &AbstractEntitledImagesModel::imageHeightChanged);
 }
 
 int AbstractEntitledImagesModel::rowCount(const QModelIndex &parent) const

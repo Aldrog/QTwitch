@@ -87,7 +87,7 @@ void StreamsModel::receiveData(const std::shared_ptr<Response> &response)
     for (const auto &stream : data->data) {
         QString imgUrl = stream.thumbnailUrl;
         imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
-        imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight));
+        imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight()));
         storage.emplace_back( EntitledImage(imgUrl, stream.userName),
                               StreamPayload(stream.title, stream.viewerCount, stream.userId) );
     }

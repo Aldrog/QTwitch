@@ -42,6 +42,8 @@ public:
 
     QVariant data(const QModelIndex &index, int role) const final;
 
+    int imageHeight() const override { return imageWidth * 9/16; }
+
 public slots:
     void resetGameFilter();
     void resetLanguageFilter();

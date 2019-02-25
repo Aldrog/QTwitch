@@ -34,6 +34,8 @@ public:
 
     QVariant data(const QModelIndex &index, int role) const final;
 
+    int imageHeight() const override { return imageWidth * 9/16; }
+
 protected:
     inline std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
 

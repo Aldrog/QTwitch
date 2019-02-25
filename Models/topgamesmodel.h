@@ -40,6 +40,8 @@ protected:
     inline std::size_t storageSize() const final { return storage.size(); }
     inline void resetStorage() final { storage.clear(); }
 
+    int imageHeight() const override { return imageWidth * 4/3; }
+
 private:
     std::shared_ptr<Api::Helix::TopGamesRequest> request;
 

@@ -67,7 +67,7 @@ void GamesSearchModel::receiveData(const std::shared_ptr<Response> &response)
     for (const auto &game : data->games) {
         QString imgUrl = game.logo.templateUrl;
         imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
-        imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight));
+        imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight()));
         storage.emplace_back( EntitledImage(imgUrl, game.name),
                               GamePayload(QString::number(game.id)) );
     }

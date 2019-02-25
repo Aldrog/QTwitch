@@ -32,9 +32,10 @@ class QTWITCHSHARED_EXPORT AbstractEntitledImagesModel : public QAbstractListMod
 {
     Q_OBJECT
     Q_PROPERTY(int pageSize READ pageSize WRITE setPageSize NOTIFY pageSizeChanged RESET resetPageSize)
-    // imageWidth and imageHeight will be ignored by some models
-    Q_PROPERTY(int imageWidth MEMBER imageWidth)
-    Q_PROPERTY(int imageHeight MEMBER imageHeight)
+    // imageHeight is calculated from imageWidth
+    // imageWidth and imageHeight may not reflect actual image sizes for some models
+    Q_PROPERTY(int imageWidth MEMBER imageWidth NOTIFY imageWidthChanged)
+    Q_PROPERTY(int imageHeight READ imageHeight NOTIFY imageHeightChanged)
 public:
     enum class Role : int {
         Image = Qt::UserRole,
@@ -50,13 +51,13 @@ public:
     virtual int pageSize() const = 0;
     virtual void setPageSize(int newSize) = 0;
     virtual void resetPageSize() = 0;
+    virtual int imageHeight() const = 0;
 
     Q_INVOKABLE virtual bool nextAvailable() const = 0;
 
     int rowCount(const QModelIndex &parent) const final;
 
     int imageWidth = 480;
-    int imageHeight = 640;
 
 public slots:
     virtual void next() = 0;
@@ -64,6 +65,8 @@ public slots:
 
 signals:
     void pageSizeChanged(int newSize);
+    void imageWidthChanged();
+    void imageHeightChanged();
 
 protected:
     virtual std::size_t storageSize() const = 0;

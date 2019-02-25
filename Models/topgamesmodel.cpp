@@ -37,7 +37,7 @@ void TopGamesModel::receiveData(const std::shared_ptr<Response> &response)
     for (const auto &game : data->data) {
         QString imgUrl = game.boxArtUrl;
         imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
-        imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight));
+        imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight()));
         storage.emplace_back( EntitledImage(imgUrl, game.name),
                               GamePayload(game.id) );
     }

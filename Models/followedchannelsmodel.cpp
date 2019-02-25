@@ -106,7 +106,7 @@ void FollowedChannelsModel::pushData()
         if (live) {
             QString imgUrl = stream->thumbnailUrl;
             imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
-            imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight));
+            imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight()));
             storage.emplace_back( EntitledImage(imgUrl, user.displayName),
                                   FollowedChannelPayload(live, stream->title, stream->viewerCount) );
         } else {
