@@ -109,6 +109,9 @@ public:
 
 protected:
     QUrlQuery getQuery() const final;
+
+private:
+    QString type = QStringLiteral("suggest");
 };
 
 class QTWITCHSHARED_EXPORT SearchStreamsRequest final : public LegacyPagedRequest

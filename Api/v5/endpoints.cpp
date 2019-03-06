@@ -50,6 +50,7 @@ QUrlQuery SearchGamesRequest::getQuery() const
 {
     QUrlQuery query = Base::getQuery();
     addParam(query, QStringLiteral("query"), searchQuery);
+    addParam(query, QStringLiteral("type"), type);
     return query;
 }
 
