@@ -56,7 +56,11 @@ QVariant GamesSearchModel::data(const QModelIndex &index, int role) const
 
 void GamesSearchModel::reload()
 {
-    resetStorage();
+    if (storageSize() != 0) {
+        beginRemoveRows(QModelIndex(), 0, storageSize() - 1);
+        resetStorage();
+        endRemoveRows();
+    }
     Client::getClient()->send(request);
 }
 
@@ -65,7 +69,7 @@ void GamesSearchModel::receiveData(const std::shared_ptr<Response> &response)
     auto data = std::unique_ptr<v5::GamesList>(static_cast<v5::GamesList*>(response->object.release()));
     beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->games.size() - 1);
     for (const auto &game : data->games) {
-        QString imgUrl = game.logo.templateUrl;
+        QString imgUrl = game.box.templateUrl;
         imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
         imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight()));
         storage.emplace_back( EntitledImage(imgUrl, game.name),
