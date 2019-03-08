@@ -33,8 +33,7 @@ class AccessTokenRequest : public Request
     typedef AccessToken ResponseObjectType;
 public:
     QString baseUrl() const final { return QStringLiteral("https://api.twitch.tv/api/"); }
-    std::optional<QString> authorizationPrefix() const final { return {}; }
-    void setAuthorization(const QString &token) final { oauthToken = token; }
+    QNetworkRequest getNetworkRequest(const std::optional<QString> &authorization) const final;
 
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 
@@ -42,7 +41,6 @@ protected:
     QUrlQuery getQuery() const final;
 
 private:
-    std::optional<QString> oauthToken;
     bool needHttps = true;
     QString platform = "web";
     QString playerBackend = "mediaplayer";
@@ -80,7 +78,6 @@ public:
     QString token;
 
     QString baseUrl() const final { return QStringLiteral("https://usher.ttvnw.net/"); }
-    std::optional<QString> authorizationPrefix() const final { return {}; }
 
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 

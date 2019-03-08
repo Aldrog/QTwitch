@@ -145,6 +145,14 @@ QUrlQuery VideosRequest::getQuery() const
     return query;
 }
 
+QNetworkRequest Helix::Request::getNetworkRequest(const std::optional<QString> &authorization) const
+{
+    auto result = QTwitch::Api::Request::getNetworkRequest(authorization);
+    if (authorization)
+        result.setRawHeader("Authorization", (QStringLiteral("Bearer ") + *authorization).toUtf8());
+    return result;
+}
+
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(GamesRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(TopGamesRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(StreamsRequest)

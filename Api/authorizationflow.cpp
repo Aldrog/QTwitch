@@ -19,8 +19,36 @@
 
 #include "authorizationflow.h"
 #include "jsonsetter.h"
+#include <QUrlQuery>
 
 using namespace QTwitch::Api::Authorization;
 using namespace QTwitch::Api;
+
+QNetworkRequest ValidateRequest::getNetworkRequest(const std::optional<QString> &authorization) const
+{
+    auto result = QTwitch::Api::Request::getNetworkRequest(authorization);
+    if (authorization)
+        result.setRawHeader("Authorization", (QStringLiteral("OAuth ") + *authorization).toUtf8());
+    return result;
+}
+
+QNetworkRequest RevokeRequest::getNetworkRequest(const std::optional<QString> &authorization) const
+{
+    Q_UNUSED(authorization)
+    QUrl url(getUrlString());
+    auto query = getQuery();
+    url.setQuery(getQuery());
+    QNetworkRequest result(url);
+    result.setRawHeader("Content-Type", "application/x-www-form-urlencoded");
+    return result;
+}
+
+QByteArray RevokeRequest::postData(const std::optional<QString> &authorization) const
+{
+    QUrlQuery query;
+    addParam(query, QStringLiteral("client_id"), QStringLiteral(TWITCH_CLIENT_ID));
+    addParam(query, QStringLiteral("token"), authorization);
+    return query.toString().toUtf8();
+}
 
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(ValidateRequest)

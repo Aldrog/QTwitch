@@ -67,6 +67,15 @@ std::unique_ptr<Object> UnfollowChannelRequest::createResponseObject(const QByte
     return std::make_unique<Object>();
 }
 
+QNetworkRequest v5::Request::getNetworkRequest(const std::optional<QString> &authorization) const
+{
+    auto result = QTwitch::Api::Request::getNetworkRequest(authorization);
+    if (authorization)
+        result.setRawHeader("Authorization", (QStringLiteral("OAuth ") + *authorization).toUtf8());
+    result.setRawHeader("Accept", "application/vnd.twitchtv.v5+json");
+    return result;
+}
+
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(FollowChannelRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(SearchChannelsRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(SearchGamesRequest)

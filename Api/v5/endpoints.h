@@ -31,7 +31,7 @@ class Request : public QTwitch::Api::Request
 {
 public:
     QString baseUrl() const final { return QStringLiteral("https://api.twitch.tv/kraken/"); }
-    std::optional<QString> authorizationPrefix() const final { return QStringLiteral("OAuth "); }
+    QNetworkRequest getNetworkRequest(const std::optional<QString> &authorization) const final;
 };
 
 class LegacyPagedRequest : public Request

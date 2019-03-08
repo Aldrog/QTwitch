@@ -29,7 +29,6 @@ using namespace QTwitch::Api::Usher;
 QUrlQuery AccessTokenRequest::getQuery() const
 {
     QUrlQuery query = Base::getQuery();
-    addParam(query, QStringLiteral("oauth_token"), oauthToken);
     addParam(query, QStringLiteral("need_https"), needHttps);
     addParam(query, QStringLiteral("platform"), platform);
     addParam(query, QStringLiteral("player_backend"), playerBackend);
@@ -134,4 +133,15 @@ std::unique_ptr<Object> PlaylistRequest::createResponseObject(const QByteArray &
         lineStart = lineEnd;
     }
     return std::move(result);
+}
+
+QNetworkRequest AccessTokenRequest::getNetworkRequest(const std::optional<QString> &authorization) const
+{
+    QUrl url(getUrlString());
+    auto query = getQuery();
+    addParam(query, QStringLiteral("oauth_token"), authorization);
+    url.setQuery(getQuery());
+    QNetworkRequest result(url);
+    result.setRawHeader("Client-ID", TWITCH_CLIENT_ID);
+    return result;
 }

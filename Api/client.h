@@ -22,7 +22,7 @@
 
 #include "request.h"
 #include "response.h"
-#include "credentials.h"
+#include "authorizationmanager.h"
 
 #include "qtwitch_global.h"
 #include <QObject>
@@ -35,81 +35,16 @@ namespace Api {
 class QTWITCHSHARED_EXPORT Client : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(AuthorizationStatus authorizationStatus MEMBER authorizationStatus NOTIFY authorizationStatusChanged)
+    Q_PROPERTY(AuthorizationManager* authorization READ authorization CONSTANT)
 public:
     explicit Client(QObject *parent = nullptr);
 
-    void setCredentialsStorage(std::unique_ptr<AbstractCredentialsStorage> storage);
-
-    enum class AuthorizationError
-    {
-        VerificationFailed = 1,
-        InvalidRedirectUrl,
-        StateMismatch
-    };
-    Q_ENUM(AuthorizationError)
-
-    enum class AuthorizationScope
-    {
-        // New API
-        AnalyticsReadExtensions,
-        AnalyticsReadGames,
-        BitsRead,
-        ClipsEdit,
-        UserEdit,
-        UserEditBroadcast,
-        UserReadBroadcast,
-        UserReadEmail,
-
-        // API v5
-        ChannelCheckSubscription,
-        ChannelCommercial,
-        ChannelEditor,
-        ChannelFeedEdit,
-        ChannelFeedRead,
-        ChannelRead,
-        ChannelStream,
-        ChannelSubscriptions,
-        CollectionsEdit,
-        CommunitiesEdit,
-        OpenId,
-        UserBlocksEdit,
-        UserBlocksRead,
-        UserFollowsEdit,
-        UserRead,
-        UserSubscriptions,
-        ViewingActivityRead,
-
-        // Chat
-        ChannelModerate,
-        ChatEdit,
-        ChatRead,
-        WhispersRead,
-        WhispersEdit
-    };
-    Q_ENUM(AuthorizationScope)
-
-    enum class AuthorizationStatus
-    {
-        Authorized,
-        NotAuthorized,
-        Invalid
-    };
-    Q_ENUM(AuthorizationStatus)
-
-    AuthorizationStatus authorizationStatus = AuthorizationStatus::NotAuthorized;
-
-    inline QString getUserId() const { return credentials.userId; }
+    AuthorizationManager *authorization() const { return mAuthorization.get(); }
 
     static std::shared_ptr<Client> get();
 
 public slots:
     void send(const std::shared_ptr<QTwitch::Api::Request> &request);
-
-    QUrl initiateAuthorization(const std::vector<AuthorizationScope> &scopes, bool force = false);
-    void updateAuthorization(const QUrl &url);
-    void eraseAuthorization();
-    void verifyAuthorization();
 
 signals:
     void receive(const std::shared_ptr<QTwitch::Api::Response> &response);
@@ -117,22 +52,9 @@ signals:
     void error(QNetworkReply::NetworkError e);
     void sslErrors(QNetworkReply *reply, const QList<QSslError> &e);
 
-    void authorizationCompleted();
-    void authorizationStatusChanged(AuthorizationStatus status);
-    void authorizationError(AuthorizationError e);
-
 private:
     std::unique_ptr<QNetworkAccessManager> network;
-    std::unique_ptr<AbstractCredentialsStorage> credentialsStorage;
-
-    Credentials credentials;
-
-    void setAuthorizationStatus(AuthorizationStatus status);
-
-    QString authorizationStateParameter;
-
-    static QString generateRandomString(int from, int to);
-    static QString scopeToString(AuthorizationScope scope);
+    std::unique_ptr<AuthorizationManager> mAuthorization;
 };
 
 }

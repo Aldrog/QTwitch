@@ -55,8 +55,21 @@ class ValidateRequest final : public Request
 public:
     QString baseUrl() const override { return QStringLiteral("https://id.twitch.tv/oauth2/"); }
     QString endpoint() const override { return QStringLiteral("validate"); }
-    std::optional<QString> authorizationPrefix() const final { return QStringLiteral("OAuth "); }
+    QNetworkRequest getNetworkRequest(const std::optional<QString> &authorization) const final;
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const override;
+};
+
+class RevokeRequest final : public Request
+{
+    typedef Request Base;
+    typedef Object ResponseObjectType;
+public:
+    QString baseUrl() const override { return QStringLiteral("https://id.twitch.tv/oauth2/"); }
+    QString endpoint() const override { return QStringLiteral("revoke"); }
+    QNetworkRequest getNetworkRequest(const std::optional<QString> &authorization) const final;
+    std::unique_ptr<Object> createResponseObject(const QByteArray &) const override { return std::make_unique<Object>(); }
+    RequestType requestType() const final { return RequestType::Post; }
+    QByteArray postData(const std::optional<QString> &authorization) const final;
 };
 
 }

@@ -27,7 +27,8 @@ SOURCES += \
     v5/endpoints.cpp \
     Usher/endpoints.cpp \
     qsettingscredentialsstorage.cpp \
-    authorizationflow.cpp
+    authorizationflow.cpp \
+    authorizationmanager.cpp
 
 HEADERS += \
     client.h \
@@ -42,7 +43,8 @@ HEADERS += \
     Usher/endpoints.h \
     Usher/data.h \
     qsettingscredentialsstorage.h \
-    authorizationflow.h
+    authorizationflow.h \
+    authorizationmanager.h
 
 unix {
     isEmpty(INSTALL_PREFIX): INSTALL_PREFIX = /usr

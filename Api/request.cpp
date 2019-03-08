@@ -32,11 +32,16 @@ QUrlQuery Request::getQuery() const
     return QUrlQuery();
 }
 
-QUrl Request::getFullUrl() const
+/* Default implementation ignores authorization */
+QNetworkRequest Request::getNetworkRequest(const std::optional<QString> &authorization) const
 {
+    Q_UNUSED(authorization)
+
     QUrl url(getUrlString());
     url.setQuery(getQuery());
-    return url;
+    QNetworkRequest result(url);
+    result.setRawHeader("Client-ID", TWITCH_CLIENT_ID);
+    return result;
 }
 
 void Request::addParam(QUrlQuery &query, const QString &key, const QString &value) const

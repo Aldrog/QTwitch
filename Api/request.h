@@ -36,21 +36,24 @@ public:
     virtual ~Request() = default;
     virtual QString baseUrl() const = 0;
     virtual QString endpoint() const = 0;
-    // Prefix for Authorization header
-    virtual std::optional<QString> authorizationPrefix() const = 0;
-    // When authorizationPrefix() is not set, setAuthorization will be called instead
-    virtual void setAuthorization(const QString &) {}
 
-    QUrl getFullUrl() const;
+    /* Creates a QNetworkRequest with full endpoint URL and all endpoint-specific headers. */
+    virtual QNetworkRequest getNetworkRequest(const std::optional<QString> &authorization) const;
     virtual std::unique_ptr<Object> createResponseObject(const QByteArray &) const = 0;
 
     enum class RequestType {
-        Get,
-        Put,
-        Delete
+        Get
+      , Put
+      , Delete
+      , Post
     };
 
     virtual RequestType requestType() const { return RequestType::Get; }
+
+    virtual QByteArray postData(const std::optional<QString> &authorization) const {
+        Q_UNUSED(authorization);
+        throw std::runtime_error("postData() called on non-POST request");
+    }
 
 signals:
     void responseReceived(const std::shared_ptr<QTwitch::Api::Response> &request);
@@ -72,7 +75,6 @@ protected:
         addParam(query, key, *value);
     }
 
-private:
     QString getUrlString() const;
 };
 

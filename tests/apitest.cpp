@@ -53,6 +53,7 @@ private slots:
     void testCaseVideos();
     void testCaseAuthorization();
     void testCaseStreamPlaylist();
+    void testCaseDeathorization();
 
     void cleanupTestCase();
 
@@ -112,8 +113,6 @@ void ApiTest::testCaseTopGames()
     auto request = std::make_shared<Helix::TopGamesRequest>();
     request->first = 24;
 
-    qDebug() << "Top games url:" << request->getFullUrl();
-
     auto response = sendRequest(request);
     auto games = dynamic_pointer_cast<Helix::GamesList> (
                  shared_ptr<Object>(move(response->object)) );
@@ -125,8 +124,6 @@ void ApiTest::testCaseGames()
 {
     auto request = std::make_shared<Helix::GamesRequest>();
     request->name = {"Dota 2", "Hollow Knight", "Pillars of Eternity"};
-
-    qDebug() << "Games url:" << request->getFullUrl();
 
     auto response = sendRequest(request);
     auto games = dynamic_pointer_cast<Helix::GamesList> (
@@ -140,8 +137,6 @@ void ApiTest::testCaseUser()
 {
     auto request = std::make_shared<Helix::UsersRequest>();
     request->login = {"aldrog"};
-
-    qDebug() << "Users url:" << request->getFullUrl();
 
     auto response = sendRequest(request);
     auto users = dynamic_pointer_cast<Helix::UsersList> (
@@ -158,8 +153,6 @@ void ApiTest::testCaseUserFollows()
     request->fromId = userId;
     request->first = 24;
 
-    qDebug() << "User follows url:" << request->getFullUrl();
-
     auto response = sendRequest(request);
     auto follows = dynamic_pointer_cast<Helix::FollowsList> (
                  shared_ptr<Object>(move(response->object)) );
@@ -171,8 +164,6 @@ void ApiTest::testCaseStreams()
 {
     auto request = std::make_shared<Helix::StreamsRequest>();
     request->first = 24;
-
-    qDebug() << "Streams url:" << request->getFullUrl();
 
     auto response = sendRequest(request);
     auto streams = dynamic_pointer_cast<Helix::StreamsList> (
@@ -188,8 +179,6 @@ void ApiTest::testCaseVideos()
     request->first = 24;
     request->sort = Helix::VideosRequest::Sorting::Trending;
 
-    qDebug() << "Videos url:" << request->getFullUrl();
-
     auto response = sendRequest(request);
     auto videos = dynamic_pointer_cast<Helix::VideosList> (
                  shared_ptr<Object>(move(response->object)) );
@@ -200,22 +189,24 @@ void ApiTest::testCaseVideos()
 
 void ApiTest::testCaseAuthorization()
 {
-    client->setCredentialsStorage(std::make_unique<QSettingsCredentialsStorage>(QCoreApplication::applicationDirPath() + "/test.ini", QSettings::Format::IniFormat));
-    if (client->authorizationStatus == Client::AuthorizationStatus::Authorized)
+    client->authorization()->setCredentialsStorage(std::make_unique<QSettingsCredentialsStorage>(QCoreApplication::applicationDirPath() + "/test.ini", QSettings::Format::IniFormat));
+    if (client->authorization()->status() == AuthorizationManager::Status::Authorized)
         QSKIP("Skipping authorization. Remove test.ini to redo authorization test.");
-    QSignalSpy authWatcher(client.get(), &Client::authorizationCompleted);
-    connect(client.get(), &Client::authorizationError, [] (Client::AuthorizationError e) { qDebug() << "Authorization error:" << e; });
-    qInfo() << "Copy the following into a browser:\n" << client->initiateAuthorization({Client::AuthorizationScope::UserFollowsEdit,
-                                                                                        Client::AuthorizationScope::ChatEdit,
-                                                                                        Client::AuthorizationScope::ChatRead});
-    qDebug() << client->authorizationStatus;
+    QSignalSpy authWatcher(client->authorization(), &AuthorizationManager::completed);
+    connect(client->authorization(), &AuthorizationManager::error, [] (AuthorizationManager::Error e)
+        { qDebug() << "Authorization error:" << e; }
+    );
+    qInfo() << "Copy the following into a browser:\n" << client->authorization()->init({AuthorizationManager::Scope::UserFollowsEdit,
+                                                                                        AuthorizationManager::Scope::ChatEdit,
+                                                                                        AuthorizationManager::Scope::ChatRead});
+    qDebug() << client->authorization()->status();
     QTextStream input(stdin);
     qInfo() << "After authorization paste redirect url into the terminal:";
     QString inputLine = input.readLine();
     QUrl redirect(inputLine);
-    client->updateAuthorization(redirect);
+    client->authorization()->update(redirect);
     authWatcher.wait();
-    QVERIFY(client->authorizationStatus == Client::AuthorizationStatus::Authorized);
+    QVERIFY(client->authorization()->status() == AuthorizationManager::Status::Authorized);
     QVERIFY(!authWatcher.isEmpty());
 }
 
@@ -225,8 +216,6 @@ void ApiTest::testCaseStreamPlaylist()
     {
         auto request = std::make_shared<Helix::StreamsRequest>();
         request->first = 1;
-
-        qDebug() << "Streams url:" << request->getFullUrl();
 
         auto response = sendRequest(request);
         auto streams = dynamic_pointer_cast<Helix::StreamsList> (
@@ -239,8 +228,6 @@ void ApiTest::testCaseStreamPlaylist()
         auto request = std::make_shared<Helix::UsersRequest>();
         request->id = {channelId};
 
-        qDebug() << "Streams url:" << request->getFullUrl();
-
         auto response = sendRequest(request);
         auto users = dynamic_pointer_cast<Helix::UsersList> (
                      shared_ptr<Object>(move(response->object)) );
@@ -251,8 +238,6 @@ void ApiTest::testCaseStreamPlaylist()
     {
         auto request = std::make_shared<Usher::StreamAccessTokenRequest>();
         request->channelId = channelLogin;
-
-        qDebug() << "Access token url:" << request->getFullUrl();
 
         auto response = sendRequest(request);
         token = dynamic_pointer_cast<Usher::AccessToken> (
@@ -265,8 +250,6 @@ void ApiTest::testCaseStreamPlaylist()
         request->sig = token->sig;
         request->token = token->token;
 
-        qDebug() << "Playlist url:" << request->getFullUrl();
-
         auto response = sendRequest(request);
         auto playlist = dynamic_pointer_cast<Usher::Playlist> (
                      shared_ptr<Object>(move(response->object)) );
@@ -274,8 +257,26 @@ void ApiTest::testCaseStreamPlaylist()
         for (const auto &i : playlist->playlist)
             qDebug() << i.id << i.name << i.url;
     }
+}
 
+void ApiTest::testCaseDeathorization()
+{
+    if (client->authorization()->status() != AuthorizationManager::Status::Authorized)
+        QSKIP("Not authorized. Skipping de-authorization test.");
+    qDebug() << "Press y to de-authorize:";
+    QTextStream input(stdin);
+    QString inputLine = input.readLine();
+    if (inputLine != QStringLiteral("y"))
+        QSKIP("Skipping de-authorization test.");
 
+    QSignalSpy authWatcher(client.get(), &Client::receive);
+    connect(client->authorization(), &AuthorizationManager::error, [] (AuthorizationManager::Error e)
+        { qDebug() << "Authorization error:" << e; }
+    );
+    client->authorization()->erase();
+    authWatcher.wait();
+
+    QVERIFY(client->authorization()->status() == AuthorizationManager::Status::NotAuthorized);
 }
 
 QTEST_MAIN(ApiTest)

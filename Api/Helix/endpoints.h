@@ -31,7 +31,7 @@ class Request : public QTwitch::Api::Request
 {
 public:
     QString baseUrl() const final { return QStringLiteral("https://api.twitch.tv/helix/"); }
-    std::optional<QString> authorizationPrefix() const final { return QStringLiteral("Bearer "); }
+    QNetworkRequest getNetworkRequest(const std::optional<QString> &authorization) const final;
 };
 
 class PagedRequest : public Request
