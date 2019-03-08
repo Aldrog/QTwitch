@@ -61,7 +61,7 @@ void GamesSearchModel::reload()
         resetStorage();
         endRemoveRows();
     }
-    Client::getClient()->send(request);
+    Client::get()->send(request);
 }
 
 void GamesSearchModel::receiveData(const std::shared_ptr<Response> &response)

@@ -30,7 +30,7 @@ void UserInfo::setUserId(const QString &newUserId)
             emit displayChanged(mDisplay);
         }
     });
-    Client::getClient()->send(request);
+    Client::get()->send(request);
 }
 
 void UserInfo::setLogin(const QString &newLogin)
@@ -53,7 +53,7 @@ void UserInfo::setLogin(const QString &newLogin)
             emit displayChanged(mDisplay);
         }
     });
-    Client::getClient()->send(request);
+    Client::get()->send(request);
 }
 
 void UserInfo::setSelf(bool newSelf)
@@ -79,5 +79,5 @@ void UserInfo::setSelf(bool newSelf)
             emit displayChanged(mDisplay);
         }
     });
-    Client::getClient()->send(request);
+    Client::get()->send(request);
 }

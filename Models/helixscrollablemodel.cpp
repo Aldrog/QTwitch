@@ -33,7 +33,7 @@ void HelixScrollableModel::next()
     auto request = getRequest();
     request->after = pagingCursor;
     request->before.reset();
-    Client::getClient()->send(request);
+    Client::get()->send(request);
 }
 
 bool HelixScrollableModel::nextAvailable() const
@@ -52,7 +52,7 @@ void HelixScrollableModel::reload()
         resetStorage();
         endRemoveRows();
     }
-    Client::getClient()->send(request);
+    Client::get()->send(request);
 }
 
 int HelixScrollableModel::pageSize() const

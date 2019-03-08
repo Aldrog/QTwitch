@@ -44,7 +44,7 @@ void Client::setCredentialsStorage(std::unique_ptr<AbstractCredentialsStorage> s
     }
 }
 
-std::shared_ptr<Client> Client::getClient()
+std::shared_ptr<Client> Client::get()
 {
     static std::shared_ptr<Client> client;
     if (!client)

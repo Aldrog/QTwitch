@@ -33,7 +33,7 @@ void LegacyScrollableModel::next()
 {
     auto request = getRequest();
     request->offset = storageSize();
-    Client::getClient()->send(request);
+    Client::get()->send(request);
 }
 
 bool LegacyScrollableModel::nextAvailable() const
@@ -50,7 +50,7 @@ void LegacyScrollableModel::reload()
         resetStorage();
         endRemoveRows();
     }
-    Client::getClient()->send(request);
+    Client::get()->send(request);
 }
 
 int LegacyScrollableModel::pageSize() const

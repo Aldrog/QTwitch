@@ -57,7 +57,7 @@ private slots:
     void cleanupTestCase();
 
 protected:
-    shared_ptr<Client> client = Client::getClient();
+    shared_ptr<Client> client = Client::get();
     QString userId;
 
     std::shared_ptr<Response> sendRequest(const std::shared_ptr<Request> &request)

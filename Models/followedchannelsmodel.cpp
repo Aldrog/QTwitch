@@ -27,7 +27,7 @@ FollowedChannelsModel::FollowedChannelsModel(QObject *parent)
     : HelixScrollableModel(parent)
 {
     request = std::make_shared<Helix::UserFollowsRequest>();
-    request->fromId = Client::getClient()->getUserId();
+    request->fromId = Client::get()->getUserId();
     connect(request.get(), &Request::responseReceived, this, &FollowedChannelsModel::receiveFollows);
 
     usersRequest = std::make_shared<Helix::UsersRequest>();
@@ -69,7 +69,7 @@ void FollowedChannelsModel::receiveFollows(const std::shared_ptr<Response> &resp
         usersRequest->id.push_back(follow.toId);
         streamsRequest->userId.push_back(follow.toId);
     }
-    auto client = Client::getClient();
+    auto client = Client::get();
     client->send(usersRequest);
     client->send(streamsRequest);
     updateCursor(data->pagination.cursor);

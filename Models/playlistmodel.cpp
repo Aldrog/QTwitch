@@ -61,7 +61,7 @@ void PlaylistModel::setChannel(const QString &newChannel)
     currentRequest = req;
     connect(req.get(), &Request::responseReceived, this, &PlaylistModel::receiveToken);
     req->channelId = mChannel;
-    Client::getClient()->send(req);
+    Client::get()->send(req);
 }
 
 void PlaylistModel::setVodId(const QString &newVodId)
@@ -76,7 +76,7 @@ void PlaylistModel::setVodId(const QString &newVodId)
     currentRequest = req;
     connect(req.get(), &Request::responseReceived, this, &PlaylistModel::receiveToken);
     req->vodId = mVodId;
-    Client::getClient()->send(req);
+    Client::get()->send(req);
 }
 
 void PlaylistModel::receiveToken(const std::shared_ptr<Response> &response)
@@ -103,7 +103,7 @@ void PlaylistModel::receiveToken(const std::shared_ptr<Response> &response)
         throw std::runtime_error("Unexpected content type in PlaylistModel");
     }
     connect(currentRequest.get(), &Request::responseReceived, this, &PlaylistModel::receivePlaylist);
-    Client::getClient()->send(currentRequest);
+    Client::get()->send(currentRequest);
 }
 
 void PlaylistModel::receivePlaylist(const std::shared_ptr<Response> &response)

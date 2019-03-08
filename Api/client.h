@@ -101,7 +101,7 @@ public:
 
     inline QString getUserId() const { return credentials.userId; }
 
-    static std::shared_ptr<Client> getClient();
+    static std::shared_ptr<Client> get();
 
 public slots:
     void send(const std::shared_ptr<QTwitch::Api::Request> &request);
