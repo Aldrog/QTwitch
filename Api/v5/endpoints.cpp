@@ -50,6 +50,7 @@ QUrlQuery SearchGamesRequest::getQuery() const
 {
     QUrlQuery query = Base::getQuery();
     addParam(query, QStringLiteral("query"), searchQuery);
+    addParam(query, QStringLiteral("live"), live);
     addParam(query, QStringLiteral("type"), type);
     return query;
 }
@@ -58,6 +59,7 @@ QUrlQuery SearchStreamsRequest::getQuery() const
 {
     QUrlQuery query = Base::getQuery();
     addParam(query, QStringLiteral("query"), searchQuery);
+    addParam(query, QStringLiteral("hls"), hls);
     return query;
 }
 
@@ -76,7 +78,17 @@ QNetworkRequest v5::Request::getNetworkRequest(const std::optional<QString> &aut
     return result;
 }
 
+
+
+QUrlQuery FollowedStreamsRequest::getQuery() const
+{
+    QUrlQuery query = Base::getQuery();
+    addParam(query, QStringLiteral("type"), type);
+    return query;
+}
+
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(FollowChannelRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(SearchChannelsRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(SearchGamesRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(SearchStreamsRequest)
+GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(FollowedStreamsRequest)

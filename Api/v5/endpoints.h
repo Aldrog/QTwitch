@@ -101,7 +101,7 @@ class QTWITCHSHARED_EXPORT SearchGamesRequest final : public Request
     typedef GamesList ResponseObjectType;
 public:
     QString searchQuery;
-    std::optional<bool> hls;
+    std::optional<bool> live;
 
     QString endpoint() const final { return QStringLiteral("search/games"); }
 
@@ -120,9 +120,25 @@ class QTWITCHSHARED_EXPORT SearchStreamsRequest final : public LegacyPagedReques
     typedef StreamsList ResponseObjectType;
 public:
     QString searchQuery;
-    std::optional<bool> live;
+    std::optional<bool> hls;
 
     QString endpoint() const final { return QStringLiteral("search/streams"); }
+
+    std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
+
+protected:
+    QUrlQuery getQuery() const final;
+};
+
+class QTWITCHSHARED_EXPORT FollowedStreamsRequest final : public LegacyPagedRequest
+{
+    typedef LegacyPagedRequest Base;
+    typedef StreamsList ResponseObjectType;
+public:
+    QString searchQuery;
+    QString type;
+
+    QString endpoint() const final { return QStringLiteral("streams/followed"); }
 
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 

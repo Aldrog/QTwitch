@@ -173,6 +173,7 @@ public:
     {
         visitor.visit(id, "_id");
         visitor.visit(averageFps, "average_fps");
+        visitor.visit(channel, "channel");
         visitor.visit(createdAt, "created_at");
         visitor.visit(delay, "delay");
         visitor.visit(game, "game");
