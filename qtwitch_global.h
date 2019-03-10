@@ -52,7 +52,7 @@ class optional
     T val;
     bool hasVal;
 public:
-    optional()
+    optional() //-V730
         : hasVal(false)
     {}
     optional(T val_)
