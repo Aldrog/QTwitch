@@ -135,8 +135,7 @@ class QTWITCHSHARED_EXPORT FollowedStreamsRequest final : public LegacyPagedRequ
     typedef LegacyPagedRequest Base;
     typedef StreamsList ResponseObjectType;
 public:
-    QString searchQuery;
-    QString type;
+    QString streamType;
 
     QString endpoint() const final { return QStringLiteral("streams/followed"); }
 

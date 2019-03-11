@@ -83,7 +83,7 @@ QNetworkRequest v5::Request::getNetworkRequest(const std::optional<QString> &aut
 QUrlQuery FollowedStreamsRequest::getQuery() const
 {
     QUrlQuery query = Base::getQuery();
-    addParam(query, QStringLiteral("type"), type);
+    addParam(query, QStringLiteral("stream_type"), streamType);
     return query;
 }
 
