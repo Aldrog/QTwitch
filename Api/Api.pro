@@ -26,6 +26,7 @@ SOURCES += \
     Helix/endpoints.cpp \
     v5/endpoints.cpp \
     Usher/endpoints.cpp \
+    Experimental/endpoints.cpp \
     qsettingscredentialsstorage.cpp \
     authorizationflow.cpp \
     authorizationmanager.cpp
@@ -42,6 +43,8 @@ HEADERS += \
     v5/data.h \
     Usher/endpoints.h \
     Usher/data.h \
+    Experimental/endpoints.h \
+    Experimental/data.h \
     qsettingscredentialsstorage.h \
     authorizationflow.h \
     authorizationmanager.h
