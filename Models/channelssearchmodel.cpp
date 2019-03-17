@@ -30,13 +30,13 @@ ChannelsSearchModel::ChannelsSearchModel(QObject *parent)
 void ChannelsSearchModel::receiveData(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<v5::ChannelsList>(static_cast<v5::ChannelsList*>(response->object.release()));
-    updateTotal(data->total);
     beginInsertRows(QModelIndex(), storage.size(), storage.size() + data->channels.size() - 1);
     for (const auto &channel : data->channels) {
         storage.emplace_back( EntitledImage(channel.logo, channel.displayName),
                               UserPayload(QString::number(channel.id)) );
     }
     endInsertRows();
+    updateTotal(data->total);
 }
 
 QString ChannelsSearchModel::query() const
