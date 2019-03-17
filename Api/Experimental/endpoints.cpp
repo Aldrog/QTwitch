@@ -35,6 +35,14 @@ QNetworkRequest Experimental::Request::getNetworkRequest(const std::optional<QSt
     return result;
 }
 
+QUrlQuery LegacyPagedRequest::getQuery() const
+{
+    QUrlQuery query = Base::getQuery();
+    addParam(query, QStringLiteral("limit"), limit);
+    addParam(query, QStringLiteral("offset"), offset);
+    return query;
+}
+
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(FollowGameRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(GetFollowGameRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(FollowedGamesRequest)

@@ -59,9 +59,6 @@ public:
     RequestType requestType() const final { return RequestType::Put; }
 
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
-
-protected:
-    QUrlQuery getQuery() const final;
 };
 
 class QTWITCHSHARED_EXPORT UnfollowGameRequest final : public Request
