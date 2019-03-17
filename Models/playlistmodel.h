@@ -36,9 +36,9 @@ public:
     void setVodId(const QString &newVodId);
 
 signals:
-    void channelChanged(const QString &newChannel);
-    void vodIdChanged(const QString &newVodId);
-    void audioUrlChanged(const QString &newAurioUrl);
+    void channelChanged(const QString &channel);
+    void vodIdChanged(const QString &vodId);
+    void audioUrlChanged(const QString &aurioUrl);
 
 private:
     std::unique_ptr<Api::Usher::Playlist> storage;

@@ -38,8 +38,8 @@ public:
     void setTargetUser(const QString &newTargetUser);
 
 signals:
-    void targetUserChanged(const QString &newTargetUser);
-    void followedChanged(bool newFollowed);
+    void targetUserChanged(const QString &targetUser);
+    void followedChanged(bool followed);
 
 public slots:
     void follow();

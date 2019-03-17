@@ -20,8 +20,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     abstractentitledimagesmodel.cpp \
-    helixscrollablemodel.cpp \
-    legacyscrollablemodel.cpp \
     topgamesmodel.cpp \
     streamsmodel.cpp \
     followedchannelsmodel.cpp \

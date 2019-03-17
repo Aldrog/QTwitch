@@ -26,16 +26,13 @@
 
 namespace QTwitch {
 namespace Models {
-namespace Legacy {
 
-class QTWITCHSHARED_EXPORT GamesSearchModel : public AbstractEntitledImagesModel
+class QTWITCHSHARED_EXPORT GamesSearchModel : public EntitledImagesModel<GamePayload>
 {
     Q_OBJECT
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged RESET resetQuery)
 public:
     explicit GamesSearchModel(QObject *parent = nullptr);
-
-    QVariant data(const QModelIndex &index, int role) const final;
 
     inline int pageSize() const override { return 0; }
     inline void setPageSize(int) override {}
@@ -54,30 +51,15 @@ public slots:
     void reload() override;
 
 signals:
-    void queryChanged(const QString &newQuery);
-
-protected:
-    inline std::size_t storageSize() const final { return storage.size(); }
-    inline void resetStorage() final { storage.clear(); }
+    void queryChanged(const QString &query);
 
 private:
     std::shared_ptr<Api::v5::SearchGamesRequest> request;
 
-    struct Data {
-        Data(EntitledImage img_, GamePayload payload_)
-            : img(std::move(img_)), payload(std::move(payload_))
-        {}
-        EntitledImage img;
-        GamePayload payload;
-    };
-
-    std::vector<Data> storage;
-
-private slots:
+protected slots:
     void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response);
 };
 
-}
 }
 }
 

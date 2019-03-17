@@ -22,41 +22,22 @@
 
 #include "helixscrollablemodel.h"
 #include "payloads.h"
+#include <Api/Helix/endpoints.h>
 
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT TopGamesModel : public HelixScrollableModel
+class QTWITCHSHARED_EXPORT TopGamesModel : public HelixScrollableModel<GamePayload, Api::Helix::TopGamesRequest>
 {
     Q_OBJECT
 public:
     explicit TopGamesModel(QObject *parent = nullptr);
 
-    QVariant data(const QModelIndex &index, int role) const final;
-
 protected:
-    inline std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
-
-    inline std::size_t storageSize() const final { return storage.size(); }
-    inline void resetStorage() final { storage.clear(); }
-
     int imageHeight() const override { return imageWidth * 4/3; }
 
-private:
-    std::shared_ptr<Api::Helix::TopGamesRequest> request;
-
-    struct Data {
-        Data(EntitledImage img_, GamePayload payload_)
-            : img(std::move(img_)), payload(std::move(payload_))
-        {}
-        EntitledImage img;
-        GamePayload payload;
-    };
-
-    std::vector<Data> storage;
-
-private slots:
-    void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response);
+protected slots:
+    void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response) final;
 };
 
 }

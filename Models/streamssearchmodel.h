@@ -22,19 +22,17 @@
 
 #include "legacyscrollablemodel.h"
 #include "payloads.h"
+#include <Api/v5/endpoints.h>
 
 namespace QTwitch {
 namespace Models {
-namespace Legacy {
 
-class QTWITCHSHARED_EXPORT StreamsSearchModel : public LegacyScrollableModel
+class QTWITCHSHARED_EXPORT StreamsSearchModel : public LegacyScrollableModel<StreamPayload, Api::v5::SearchStreamsRequest>
 {
     Q_OBJECT
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged RESET resetQuery)
 public:
     explicit StreamsSearchModel(QObject *parent = nullptr);
-
-    QVariant data(const QModelIndex &index, int role) const final;
 
     QString query() const;
     void setQuery(const QString &newQuery);
@@ -45,32 +43,12 @@ public slots:
     void resetQuery();
 
 signals:
-    void queryChanged(const QString &newQuery);
+    void queryChanged(const QString &query);
 
-protected:
-    inline std::size_t storageSize() const final { return storage.size(); }
-    inline void resetStorage() final { storage.clear(); }
-
-    std::shared_ptr<Api::v5::LegacyPagedRequest> getRequest() const final { return request; }
-
-private:
-    std::shared_ptr<Api::v5::SearchStreamsRequest> request;
-
-    struct Data {
-        Data(EntitledImage img_, StreamPayload payload_)
-            : img(std::move(img_)), payload(std::move(payload_))
-        {}
-        EntitledImage img;
-        StreamPayload payload;
-    };
-
-    std::vector<Data> storage;
-
-private slots:
-    void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response);
+protected slots:
+    void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response) final;
 };
 
-}
 }
 }
 

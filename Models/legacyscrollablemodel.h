@@ -21,36 +21,84 @@
 #define LEGACYSCROLLABLEMODEL_H
 
 #include "abstractentitledimagesmodel.h"
-#include <Api/v5/endpoints.h>
+#include <Api/request.h>
+#include <Api/client.h>
 
 namespace QTwitch {
 namespace Models {
-namespace Legacy {
 
-class LegacyScrollableModel : public AbstractEntitledImagesModel
+template <class PayloadType, class RequestType>
+class LegacyScrollableModel : public EntitledImagesModel<PayloadType>
 {
-    Q_OBJECT
 public:
-    explicit LegacyScrollableModel(QObject *parent = nullptr);
+    explicit LegacyScrollableModel(QObject *parent = nullptr)
+        : EntitledImagesModel<PayloadType>(parent)
+        , request(std::make_shared<RequestType>())
+    {
+        this->connect(request.get(), &Api::Request::responseReceived, this, &LegacyScrollableModel::receiveData);
+    }
 
-    int pageSize() const override;
-    void setPageSize(int newSize) override;
-    void resetPageSize() override;
+    int pageSize() const final
+    {
+        if (!request->limit)
+            return 0;
+        return *request->limit;
+    }
 
-    bool nextAvailable() const override;
-    void next() override;
-    void reload() override;
+    void setPageSize(int newSize) final
+    {
+        if (pageSize() != newSize) {
+            request->limit = newSize;
+            emit this->pageSizeChanged(newSize);
+        }
+    }
+
+    void resetPageSize() final
+    {
+        request->limit.reset();
+    }
+
+    bool nextAvailable() const final
+    {
+        return this->storage.size() < totalCount;
+    }
+
+    void next() final
+    {
+        request->offset = this->storage.size();
+        Api::Client::get()->send(request);
+    }
+
+    void reload() final
+    {
+        request->offset.reset();
+        if (this->storage.size() != 0) {
+            this->beginRemoveRows(QModelIndex(), 0, this->storage.size() - 1);
+            this->storage.clear();
+            this->endRemoveRows();
+        }
+        Api::Client::get()->send(request);
+    }
 
 protected:
-    virtual std::shared_ptr<Api::v5::LegacyPagedRequest> getRequest() const = 0;
+    std::shared_ptr<RequestType> request;
 
-    void updateTotal(int total) { totalCount = total; }
+    // Call this after resizing storage
+    void updateTotal(int total)
+    {
+        bool wasAvailable = nextAvailable();
+        totalCount = total;
+        if (nextAvailable() != wasAvailable)
+            emit this->nextAvailableChanged();
+    }
 
 private:
     unsigned int totalCount = 0;
+
+protected slots:
+    virtual void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response) = 0;
 };
 
-}
 }
 }
 

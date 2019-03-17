@@ -25,14 +25,12 @@ using namespace QTwitch::Api;
 StreamsModel::StreamsModel(QObject *parent)
     : HelixScrollableModel(parent)
 {
-    request = std::make_shared<Helix::StreamsRequest>();
-    connect(request.get(), &Request::responseReceived, this, &StreamsModel::receiveData);
 }
 
 QStringList StreamsModel::gameFilter() const
 {
     QStringList result;
-    for (const auto i : request->gameId)
+    for (const auto &i : request->gameId)
         result.append(i);
     return result;
 }
@@ -40,7 +38,7 @@ QStringList StreamsModel::gameFilter() const
 QStringList StreamsModel::languageFilter() const
 {
     QStringList result;
-    for (const auto i : request->language)
+    for (const auto &i : request->language)
         result.append(i);
     return result;
 }
@@ -49,7 +47,7 @@ void StreamsModel::setGameFilter(const QStringList &newGameFilter)
 {
     request->gameId.clear();
     request->gameId.reserve(newGameFilter.size());
-    for (const auto i : newGameFilter)
+    for (const auto &i : newGameFilter)
         request->gameId.push_back(i);
     emit gameFilterChanged(newGameFilter);
 }
@@ -58,7 +56,7 @@ void StreamsModel::setLanguageFilter(const QStringList &newLanguageFilter)
 {
     request->language.clear();
     request->language.reserve(newLanguageFilter.size());
-    for (const auto i : newLanguageFilter)
+    for (const auto &i : newLanguageFilter)
         request->language.push_back(i);
     emit languageFilterChanged(newLanguageFilter);
 }
@@ -83,7 +81,7 @@ void StreamsModel::receiveData(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<Helix::StreamsList>(static_cast<Helix::StreamsList*>(response->object.release()));
     updateCursor(data->pagination.cursor);
-    beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->data.size() - 1);
+    beginInsertRows(QModelIndex(), storage.size(), storage.size() + data->data.size() - 1);
     for (const auto &stream : data->data) {
         QString imgUrl = stream.thumbnailUrl;
         imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
@@ -92,27 +90,4 @@ void StreamsModel::receiveData(const std::shared_ptr<Response> &response)
                               StreamPayload(stream.title, stream.viewerCount, stream.userId) );
     }
     endInsertRows();
-}
-
-QVariant StreamsModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    if (index.row() < 0 || static_cast<unsigned int>(index.row()) >= storageSize())
-        return QVariant();
-
-    if (role < Qt::UserRole || role > static_cast<int>(Role::LastRole))
-        return QVariant();
-
-    switch (static_cast<Role>(role)) {
-    case Role::Image:
-        return storage[index.row()].img.imageUrl;
-    case Role::Title:
-        return storage[index.row()].img.title;
-    case Role::AdditionalData:
-        return QVariant::fromValue(storage[index.row()].payload);
-    }
-
-    return QVariant();
 }

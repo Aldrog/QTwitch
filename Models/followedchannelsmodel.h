@@ -22,46 +22,28 @@
 
 #include "helixscrollablemodel.h"
 #include "payloads.h"
+#include <Api/Helix/endpoints.h>
 
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT FollowedChannelsModel : public HelixScrollableModel
+class QTWITCHSHARED_EXPORT FollowedChannelsModel : public HelixScrollableModel<FollowedChannelPayload, Api::Helix::UserFollowsRequest>
 {
     Q_OBJECT
 public:
     explicit FollowedChannelsModel(QObject *parent = nullptr);
 
-    QVariant data(const QModelIndex &index, int role) const final;
-
     int imageHeight() const override { return imageWidth * 9/16; }
 
-protected:
-    inline std::shared_ptr<Api::Helix::PagedRequest> getRequest() const final { return request; }
-
-    inline std::size_t storageSize() const final { return storage.size(); }
-    inline void resetStorage() final { storage.clear(); }
-
 private:
-    std::shared_ptr<Api::Helix::UserFollowsRequest> request;
     std::shared_ptr<Api::Helix::UsersRequest> usersRequest;
     std::shared_ptr<Api::Helix::StreamsRequest> streamsRequest;
-
-    struct Data {
-        Data(EntitledImage img_, FollowedChannelPayload payload_)
-            : img(std::move(img_)), payload(std::move(payload_))
-        {}
-        EntitledImage img;
-        FollowedChannelPayload payload;
-    };
-
-    std::vector<Data> storage;
 
     std::shared_ptr<QTwitch::Api::Response> usersResponse;
     std::shared_ptr<QTwitch::Api::Response> streamsResponse;
 
 private slots:
-    void receiveFollows(const std::shared_ptr<QTwitch::Api::Response> &response);
+    void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response) final;
     void receiveUsers(const std::shared_ptr<QTwitch::Api::Response> &response);
     void receiveStreams(const std::shared_ptr<QTwitch::Api::Response> &response);
     void pushData();

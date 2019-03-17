@@ -21,32 +21,87 @@
 #define HELIXSCROLLABLEMODEL_H
 
 #include "abstractentitledimagesmodel.h"
-#include <Api/Helix/endpoints.h>
+#include <Api/request.h>
+#include <Api/client.h>
 
 namespace QTwitch {
 namespace Models {
 
-class HelixScrollableModel : public AbstractEntitledImagesModel
+template <class PayloadType, class RequestType>
+class HelixScrollableModel : public EntitledImagesModel<PayloadType>
 {
-    Q_OBJECT
 public:
-    explicit HelixScrollableModel(QObject *parent = nullptr);
+    explicit HelixScrollableModel(QObject *parent = nullptr)
+        : EntitledImagesModel<PayloadType>(parent)
+        , request(std::make_shared<RequestType>())
+    {
+        this->connect(request.get(), &Api::Request::responseReceived, this, &HelixScrollableModel::receiveData);
+    }
 
-    int pageSize() const override;
-    void setPageSize(int newSize) override;
-    void resetPageSize() override;
+    int pageSize() const final
+    {
+        if (!request->first)
+            return 0;
+        return *request->first;
+    }
 
-    bool nextAvailable() const override;
-    void next() override;
-    void reload() override;
+    void setPageSize(int newSize) final
+    {
+        if (pageSize() != newSize) {
+            request->first = newSize;
+            emit this->pageSizeChanged(newSize);
+        }
+    }
+
+    void resetPageSize() final
+    {
+        if (request->first) {
+            request->first.reset();
+            emit this->pageSizeChanged(0);
+        }
+    }
+
+    bool nextAvailable() const final
+    {
+        return !pagingCursor.isEmpty();
+    }
+
+    void next() final
+    {
+        request->after = pagingCursor;
+        request->before.reset();
+        Api::Client::get()->send(request);
+    }
+
+    void reload() final
+    {
+        pagingCursor.clear();
+        request->after.reset();
+        request->before.reset();
+        if (this->storage.size() != 0) {
+            this->beginRemoveRows(QModelIndex(), 0, this->storage.size() - 1);
+            this->storage.clear();
+            this->endRemoveRows();
+        }
+        Api::Client::get()->send(request);
+    }
 
 protected:
-    virtual std::shared_ptr<Api::Helix::PagedRequest> getRequest() const = 0;
+    std::shared_ptr<RequestType> request;
 
-    void updateCursor(const QString &cursor);
+    void updateCursor(const QString &cursor)
+    {
+        bool wasAvailable = nextAvailable();
+        pagingCursor = cursor;
+        if (nextAvailable() != wasAvailable)
+            emit this->nextAvailableChanged();
+    }
 
 private:
     QString pagingCursor;
+
+protected slots:
+    virtual void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response) = 0;
 };
 
 }

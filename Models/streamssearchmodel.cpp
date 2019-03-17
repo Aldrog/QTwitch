@@ -21,44 +21,18 @@
 #include <Api/client.h>
 
 using namespace QTwitch::Models;
-using namespace QTwitch::Models::Legacy;
 using namespace QTwitch::Api;
 
 StreamsSearchModel::StreamsSearchModel(QObject *parent)
     : LegacyScrollableModel(parent)
 {
-    request = std::make_shared<v5::SearchStreamsRequest>();
-    connect(request.get(), &Request::responseReceived, this, &StreamsSearchModel::receiveData);
-}
-
-QVariant StreamsSearchModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    if (index.row() < 0 || static_cast<unsigned int>(index.row()) >= storageSize())
-        return QVariant();
-
-    if (role < Qt::UserRole || role > static_cast<int>(Role::LastRole))
-        return QVariant();
-
-    switch (static_cast<Role>(role)) {
-    case Role::Image:
-        return storage[index.row()].img.imageUrl;
-    case Role::Title:
-        return storage[index.row()].img.title;
-    case Role::AdditionalData:
-        return QVariant::fromValue(storage[index.row()].payload);
-    }
-
-    return QVariant();
 }
 
 void StreamsSearchModel::receiveData(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<v5::StreamsList>(static_cast<v5::StreamsList*>(response->object.release()));
     updateTotal(data->total);
-    beginInsertRows(QModelIndex(), storageSize(), storageSize() + data->streams.size() - 1);
+    beginInsertRows(QModelIndex(), storage.size(), storage.size() + data->streams.size() - 1);
     for (const auto &stream : data->streams) {
         QString imgUrl = stream.preview.templateUrl;
         imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));

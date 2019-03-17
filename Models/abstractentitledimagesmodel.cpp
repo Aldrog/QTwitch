@@ -27,14 +27,6 @@ AbstractEntitledImagesModel::AbstractEntitledImagesModel(QObject *parent)
     connect(this, &AbstractEntitledImagesModel::imageWidthChanged, this, &AbstractEntitledImagesModel::imageHeightChanged);
 }
 
-int AbstractEntitledImagesModel::rowCount(const QModelIndex &parent) const
-{
-    if (parent.isValid())
-        return 0;
-    else
-        return storageSize();
-}
-
 QHash<int, QByteArray> AbstractEntitledImagesModel::roleNames() const
 {
     return QHash<int, QByteArray>({

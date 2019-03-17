@@ -26,9 +26,7 @@ using namespace QTwitch::Api;
 FollowedChannelsModel::FollowedChannelsModel(QObject *parent)
     : HelixScrollableModel(parent)
 {
-    request = std::make_shared<Helix::UserFollowsRequest>();
     request->fromId = Client::get()->authorization()->userId();
-    connect(request.get(), &Request::responseReceived, this, &FollowedChannelsModel::receiveFollows);
 
     usersRequest = std::make_shared<Helix::UsersRequest>();
     connect(usersRequest.get(), &Request::responseReceived, this, &FollowedChannelsModel::receiveStreams);
@@ -37,30 +35,7 @@ FollowedChannelsModel::FollowedChannelsModel(QObject *parent)
     connect(streamsRequest.get(), &Request::responseReceived, this, &FollowedChannelsModel::receiveStreams);
 }
 
-QVariant FollowedChannelsModel::data(const QModelIndex &index, int role) const
-{
-    if (!index.isValid())
-        return QVariant();
-
-    if (index.row() < 0 || static_cast<unsigned int>(index.row()) >= storageSize())
-        return QVariant();
-
-    if (role < Qt::UserRole || role > static_cast<int>(Role::LastRole))
-        return QVariant();
-
-    switch (static_cast<Role>(role)) {
-    case Role::Image:
-        return storage[index.row()].img.imageUrl;
-    case Role::Title:
-        return storage[index.row()].img.title;
-    case Role::AdditionalData:
-        return QVariant::fromValue(storage[index.row()].payload);
-    }
-
-    return QVariant();
-}
-
-void FollowedChannelsModel::receiveFollows(const std::shared_ptr<Response> &response)
+void FollowedChannelsModel::receiveData(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<Helix::FollowsList>(static_cast<Helix::FollowsList*>(response->object.release()));
     usersRequest->id.clear();
@@ -95,7 +70,7 @@ void FollowedChannelsModel::pushData()
     auto streams = std::unique_ptr<Helix::StreamsList>(static_cast<Helix::StreamsList*>(streamsResponse->object.release()));
     usersResponse.reset();
     streamsResponse.reset();
-    beginInsertRows(QModelIndex(), storageSize(), storageSize() + users->data.size() - 1);
+    beginInsertRows(QModelIndex(), storage.size(), storage.size() + users->data.size() - 1);
     for (const auto &user : users->data) {
         const auto &stream = std::find_if(streams->data.begin(), streams->data.end(),
                                           [&user](const Helix::StreamData &s) { return s.userId == user.id; });

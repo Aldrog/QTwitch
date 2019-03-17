@@ -27,10 +27,10 @@ public:
     void setSelf(bool newSelf);
 
 signals:
-    void userIdChanged(const QString &newUserId);
-    void loginChanged(const QString &newLogin);
-    void selfChanged(bool newSelf);
-    void displayChanged(const QString &newDisplay);
+    void userIdChanged(const QString &userId);
+    void loginChanged(const QString &login);
+    void selfChanged(bool self);
+    void displayChanged(const QString &display);
 
 private:
     QString mUserId;
