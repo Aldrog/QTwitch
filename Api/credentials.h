@@ -31,11 +31,13 @@ struct QTWITCHSHARED_EXPORT Credentials
 {
     QString authToken;
     QString userId;
+    QString login;
 
     void clear()
     {
         authToken.clear();
         userId.clear();
+        login.clear();
     }
 };
 

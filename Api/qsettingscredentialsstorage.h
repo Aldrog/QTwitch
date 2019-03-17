@@ -28,6 +28,10 @@
 namespace QTwitch {
 namespace Api {
 
+/*
+ * This class stores credentials in plain text.
+ * Consider subclassing AbstractCredentialsStorage with OS-specific secrets APIs instead.
+ */
 class QTWITCHSHARED_EXPORT QSettingsCredentialsStorage : public AbstractCredentialsStorage, public QSettings
 {
 public:
@@ -40,6 +44,7 @@ public:
 private:
     static const QString authTokenKey;
     static const QString userIdKey;
+    static const QString loginKey;
 };
 
 }

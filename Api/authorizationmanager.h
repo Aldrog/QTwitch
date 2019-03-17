@@ -96,6 +96,7 @@ public:
     QByteArray authorizePost(const std::shared_ptr<Request> &request) const;
 
     inline QString userId() const { return credentials.userId; }
+    inline QString login() const { return credentials.login; }
     inline Status status() const { return mStatus; }
     void setCredentialsStorage(std::unique_ptr<AbstractCredentialsStorage> storage);
     Q_INVOKABLE QUrl init(const std::vector<Scope> &scopes, bool force = false);

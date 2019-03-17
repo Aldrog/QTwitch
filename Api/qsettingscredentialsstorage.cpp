@@ -24,20 +24,24 @@ using namespace QTwitch::Api;
 void QSettingsCredentialsStorage::readCredentials(Credentials &credentials) const
 {
     credentials.authToken = value(authTokenKey).toString();
-    credentials.userId = value(userIdKey).toString();
+    credentials.userId    = value(userIdKey   ).toString();
+    credentials.login     = value(loginKey    ).toString();
 }
 
 void QSettingsCredentialsStorage::writeCredentials(const Credentials &credentials)
 {
     setValue(authTokenKey, credentials.authToken);
-    setValue(userIdKey, credentials.userId);
+    setValue(userIdKey   , credentials.userId);
+    setValue(loginKey    , credentials.login);
 }
 
 void QSettingsCredentialsStorage::clearCredentials()
 {
     remove(authTokenKey);
     remove(userIdKey);
+    remove(loginKey);
 }
 
 const QString QSettingsCredentialsStorage::authTokenKey = QStringLiteral("Credentials/authToken");
-const QString QSettingsCredentialsStorage::userIdKey = QStringLiteral("Credentials/userId");
+const QString QSettingsCredentialsStorage::userIdKey    = QStringLiteral("Credentials/userId");
+const QString QSettingsCredentialsStorage::loginKey     = QStringLiteral("Credentials/login");
