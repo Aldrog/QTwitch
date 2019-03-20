@@ -27,7 +27,7 @@
 namespace QTwitch {
 namespace Models {
 
-class FollowedGamesModel : public LegacyScrollableModel<GamePayload, Api::Experimental::FollowedGamesRequest>
+class FollowedGamesModel : public LegacyScrollableModel<GamePayload, Api::Experimental::FollowedLiveGamesRequest>
 {
     Q_OBJECT
 public:

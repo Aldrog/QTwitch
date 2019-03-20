@@ -52,10 +52,10 @@ class QTWITCHSHARED_EXPORT FollowGameRequest final : public Request
 public:
     std::optional<bool> notifications;
 
-    QString userId;
-    QString gameId;
+    QString userLogin;
+    QString gameName;
 
-    QString endpoint() const final { return QStringLiteral("users/%1/follows/games/%2").arg(userId).arg(gameId); }
+    QString endpoint() const final { return QStringLiteral("users/%1/follows/games/%2").arg(userLogin).arg(gameName); }
     RequestType requestType() const final { return RequestType::Put; }
 
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
@@ -68,10 +68,10 @@ class QTWITCHSHARED_EXPORT UnfollowGameRequest final : public Request
     // This endpoint doesn't return any data
     // Only status code
 public:
-    QString userId;
-    QString gameId;
+    QString userLogin;
+    QString gameName;
 
-    QString endpoint() const final { return QStringLiteral("users/%1/follows/games/%2").arg(userId).arg(gameId); }
+    QString endpoint() const final { return QStringLiteral("users/%1/follows/games/%2").arg(userLogin).arg(gameName); }
     RequestType requestType() const final { return RequestType::Delete; }
 
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
@@ -82,10 +82,10 @@ class QTWITCHSHARED_EXPORT GetFollowGameRequest final : public Request
     typedef Request Base;
     typedef v5::GameData ResponseObjectType;
 public:
-    QString userId;
-    QString gameId;
+    QString userLogin;
+    QString gameName;
 
-    QString endpoint() const final { return QStringLiteral("users/%1/follows/games/%2").arg(userId).arg(gameId); }
+    QString endpoint() const final { return QStringLiteral("users/%1/follows/games/%2").arg(userLogin).arg(gameName); }
 
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 };
@@ -95,9 +95,21 @@ class QTWITCHSHARED_EXPORT FollowedGamesRequest final : public LegacyPagedReques
     typedef LegacyPagedRequest Base;
     typedef FollowedGamesList ResponseObjectType;
 public:
-    QString userId;
+    QString userLogin;
 
-    QString endpoint() const final { return QStringLiteral("users/%1/follows/games").arg(userId); }
+    QString endpoint() const final { return QStringLiteral("users/%1/follows/games").arg(userLogin); }
+
+    std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
+};
+
+class QTWITCHSHARED_EXPORT FollowedLiveGamesRequest final : public LegacyPagedRequest
+{
+    typedef LegacyPagedRequest Base;
+    typedef FollowedGamesList ResponseObjectType;
+public:
+    QString userLogin;
+
+    QString endpoint() const final { return QStringLiteral("users/%1/follows/games/live").arg(userLogin); }
 
     std::unique_ptr<Object> createResponseObject(const QByteArray &data) const final;
 };

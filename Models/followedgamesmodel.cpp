@@ -25,7 +25,7 @@ using namespace QTwitch::Api;
 FollowedGamesModel::FollowedGamesModel(QObject *parent)
     : LegacyScrollableModel(parent)
 {
-    request->userId = Client::get()->authorization()->login();
+    request->userLogin = Client::get()->authorization()->login();
 }
 
 void FollowedGamesModel::receiveData(const std::shared_ptr<QTwitch::Api::Response> &response)

@@ -46,3 +46,4 @@ QUrlQuery LegacyPagedRequest::getQuery() const
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(FollowGameRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(GetFollowGameRequest)
 GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(FollowedGamesRequest)
+GENERATE_JSON_TO_OBJECT_CONSTRUCTOR(FollowedLiveGamesRequest)
