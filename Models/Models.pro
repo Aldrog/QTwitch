@@ -22,14 +22,15 @@ SOURCES += \
     abstractentitledimagesmodel.cpp \
     topgamesmodel.cpp \
     streamsmodel.cpp \
-    followedchannelsmodel.cpp \
+    followedusersmodel.cpp \
     gamessearchmodel.cpp \
     userssearchmodel.cpp \
     streamssearchmodel.cpp \
     playlistmodel.cpp \
     userinfo.cpp \
     followmanager.cpp \
-    followedgamesmodel.cpp
+    followedgamesmodel.cpp \
+    followedstreamsmodel.cpp
 
 HEADERS += \
     abstractentitledimagesmodel.h \
@@ -38,7 +39,7 @@ HEADERS += \
     legacyscrollablemodel.h \
     topgamesmodel.h \
     streamsmodel.h \
-    followedchannelsmodel.h \
+    followedusersmodel.h \
     gamessearchmodel.h \
     userssearchmodel.h \
     streamssearchmodel.h \
@@ -46,7 +47,8 @@ HEADERS += \
     playlistmodel.h \
     userinfo.h \
     followmanager.h \
-    followedgamesmodel.h
+    followedgamesmodel.h \
+    followedstreamsmodel.h
 
 unix {
     isEmpty(INSTALL_PREFIX): INSTALL_PREFIX = /usr

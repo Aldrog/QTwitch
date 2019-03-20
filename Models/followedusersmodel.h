@@ -17,8 +17,8 @@
  * along with QTwitch.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef FOLLOWEDCHANNELSMODEL_H
-#define FOLLOWEDCHANNELSMODEL_H
+#ifndef FOLLOWEDUSERSMODEL_H
+#define FOLLOWEDUSERSMODEL_H
 
 #include "helixscrollablemodel.h"
 #include "payloads.h"
@@ -27,29 +27,26 @@
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT FollowedChannelsModel : public HelixScrollableModel<FollowedChannelPayload, Api::Helix::UserFollowsRequest>
+class QTWITCHSHARED_EXPORT FollowedUsersModel : public HelixScrollableModel<UserPayload, Api::Helix::UserFollowsRequest>
 {
     Q_OBJECT
 public:
-    explicit FollowedChannelsModel(QObject *parent = nullptr);
+    explicit FollowedUsersModel(QObject *parent = nullptr);
 
-    int imageHeight() const override { return imageWidth * 9/16; }
+    int imageHeight() const override { return imageWidth; }
 
 private:
     std::shared_ptr<Api::Helix::UsersRequest> usersRequest;
-    std::shared_ptr<Api::Helix::StreamsRequest> streamsRequest;
 
     std::shared_ptr<QTwitch::Api::Response> usersResponse;
-    std::shared_ptr<QTwitch::Api::Response> streamsResponse;
 
 private slots:
     void receiveData(const std::shared_ptr<QTwitch::Api::Response> &response) final;
     void receiveUsers(const std::shared_ptr<QTwitch::Api::Response> &response);
-    void receiveStreams(const std::shared_ptr<QTwitch::Api::Response> &response);
     void pushData();
 };
 
 }
 }
 
-#endif // FOLLOWEDCHANNELSMODEL_H
+#endif // FOLLOWEDUSERSMODEL_H
