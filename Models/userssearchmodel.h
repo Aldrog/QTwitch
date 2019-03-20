@@ -37,7 +37,7 @@ public:
     QString query() const;
     void setQuery(const QString &newQuery);
 
-    int imageHeight() const override { return imageWidth * 9/16; }
+    int imageHeight() const override { return imageWidth; }
 
 public slots:
     void resetQuery();
