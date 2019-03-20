@@ -17,8 +17,8 @@
  * along with QTwitch.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CHANNELSEARCHMODEL_H
-#define CHANNELSEARCHMODEL_H
+#ifndef USERSSEARCHMODEL_H
+#define USERSSEARCHMODEL_H
 
 #include "legacyscrollablemodel.h"
 #include "payloads.h"
@@ -27,12 +27,12 @@
 namespace QTwitch {
 namespace Models {
 
-class QTWITCHSHARED_EXPORT ChannelsSearchModel : public LegacyScrollableModel<UserPayload, Api::v5::SearchChannelsRequest>
+class QTWITCHSHARED_EXPORT UsersSearchModel : public LegacyScrollableModel<UserPayload, Api::v5::SearchChannelsRequest>
 {
     Q_OBJECT
     Q_PROPERTY(QString query READ query WRITE setQuery NOTIFY queryChanged RESET resetQuery)
 public:
-    explicit ChannelsSearchModel(QObject *parent = nullptr);
+    explicit UsersSearchModel(QObject *parent = nullptr);
 
     QString query() const;
     void setQuery(const QString &newQuery);
@@ -52,4 +52,4 @@ protected slots:
 }
 }
 
-#endif // CHANNELSEARCHMODEL_H
+#endif // USERSSEARCHMODEL_H

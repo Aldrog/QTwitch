@@ -24,7 +24,7 @@ SOURCES += \
     streamsmodel.cpp \
     followedchannelsmodel.cpp \
     gamessearchmodel.cpp \
-    channelssearchmodel.cpp \
+    userssearchmodel.cpp \
     streamssearchmodel.cpp \
     playlistmodel.cpp \
     userinfo.cpp \
@@ -39,7 +39,7 @@ HEADERS += \
     streamsmodel.h \
     followedchannelsmodel.h \
     gamessearchmodel.h \
-    channelssearchmodel.h \
+    userssearchmodel.h \
     streamssearchmodel.h \
     payloads.h \
     playlistmodel.h \

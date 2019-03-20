@@ -17,17 +17,17 @@
  * along with QTwitch.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "channelssearchmodel.h"
+#include "userssearchmodel.h"
 #include <Api/client.h>
 
 using namespace QTwitch::Models;
 using namespace QTwitch::Api;
 
-ChannelsSearchModel::ChannelsSearchModel(QObject *parent)
+UsersSearchModel::UsersSearchModel(QObject *parent)
     : LegacyScrollableModel(parent)
 { }
 
-void ChannelsSearchModel::receiveData(const std::shared_ptr<Response> &response)
+void UsersSearchModel::receiveData(const std::shared_ptr<Response> &response)
 {
     auto data = std::unique_ptr<v5::ChannelsList>(static_cast<v5::ChannelsList*>(response->object.release()));
     beginInsertRows(QModelIndex(), storage.size(), storage.size() + data->channels.size() - 1);
@@ -39,12 +39,12 @@ void ChannelsSearchModel::receiveData(const std::shared_ptr<Response> &response)
     updateTotal(data->total);
 }
 
-QString ChannelsSearchModel::query() const
+QString UsersSearchModel::query() const
 {
     return request->searchQuery;
 }
 
-void ChannelsSearchModel::setQuery(const QString &newQuery)
+void UsersSearchModel::setQuery(const QString &newQuery)
 {
     if (newQuery != request->searchQuery) {
         request->searchQuery = newQuery;
@@ -52,7 +52,7 @@ void ChannelsSearchModel::setQuery(const QString &newQuery)
     }
 }
 
-void ChannelsSearchModel::resetQuery()
+void UsersSearchModel::resetQuery()
 {
     if (!request->searchQuery.isEmpty()) {
         request->searchQuery.clear();
