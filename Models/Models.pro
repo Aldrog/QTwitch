@@ -28,7 +28,8 @@ SOURCES += \
     streamssearchmodel.cpp \
     playlistmodel.cpp \
     userinfo.cpp \
-    followmanager.cpp
+    followmanager.cpp \
+    followedgamesmodel.cpp
 
 HEADERS += \
     abstractentitledimagesmodel.h \
@@ -44,7 +45,8 @@ HEADERS += \
     payloads.h \
     playlistmodel.h \
     userinfo.h \
-    followmanager.h
+    followmanager.h \
+    followedgamesmodel.h
 
 unix {
     isEmpty(INSTALL_PREFIX): INSTALL_PREFIX = /usr
