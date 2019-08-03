@@ -8,19 +8,19 @@ Although it's primarily designed to simplify [TwitchTube](https://github.com/Ald
 * Qt 5
 * C++17-capable compiler
 
-## C++11
+## C++11 and C++14 support
 
-If for some reason you cannot use a recent compiler, QTwitch provides a C++11 compatibility mode that can be enabled by setting CXX11COMPATIBILITY environment variable.
+If for some reason you cannot use a recent compiler, QTwitch can be compiled in c++11 or c++14 mode. To do so set qmake variable `CXX_VERSION` to desired value (e.g. `qmake "CXX_VERSION=c++14"`).
 
-This mode doesn't disable any of QTwitch features but will decrease performance and may be less stable as it relies on custom backported implementations of several functions of the standard library.
+These modes don't disable any of QTwitch features but will decrease performance and might be less stable as they rely on custom backported implementations of several functions of the standard library.
 
 ## Build
 
-Twitch requires a Client-ID for all requests so before being able to use QTwitch you'll have to register your app on [developer's dashboard](https://dev.twitch.tv/), get it's Client-ID and set it to TWITCH_CLIENT_ID environment variable, e.g.:
+Twitch requires a Client-ID for all requests so before being able to use QTwitch you'll have to register your app on [developer's dashboard](https://dev.twitch.tv/), get it's Client-ID and set it to `TWITCH_CLIENT_ID` environment variable, e.g.:
 ```bash
 export TWITCH_CLIENT_ID=your-client-id
 ```
-If you need authorization you also have to set redirect url (also set on developer's dashboard) in TWITCH_REDIRECT_URI.
+If you need authorization you also have to set redirect url (also set on developer's dashboard) in `TWITCH_REDIRECT_URI`.
 ```bash
 export TWITCH_REDIRECT_URI=http://localhost
 ```

@@ -33,7 +33,9 @@
 Q_DECLARE_SMART_POINTER_METATYPE(std::shared_ptr)
 Q_DECLARE_SMART_POINTER_METATYPE(std::unique_ptr)
 
-#if __cplusplus < 201402L
+// Any value between 201104 and 201402 is considered c++14 for compatibility with older compilers
+// For c++11 or earlier define make_unique
+#if __cplusplus <= 201103L
 namespace std {
 template<typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args)
@@ -43,7 +45,25 @@ std::unique_ptr<T> make_unique(Args&&... args)
 }
 #endif
 
-#if __cplusplus < 201703L
+#if __cplusplus > 201402L // c++17
+#include <optional>
+#include <string_view>
+#elif __cplusplus <= 201402L // c++14 or earlier
+// Make use of std::experimental::optional if it's available
+#if __has_include(<experimental/optional>)
+#include <experimental/optional>
+namespace std {
+template<typename T>
+class optional : public std::experimental::optional<T> {
+public:
+    using std::experimental::optional<T>::optional;
+
+    void reset() {
+        *this = std::experimental::nullopt;
+    }
+};
+}
+#else
 namespace std {
 // Partial inefficient implementation of std::optional
 template<typename T>
@@ -78,7 +98,10 @@ public:
         hasVal = false;
     }
 };
+}
+#endif
 
+namespace std {
 // The same goes about string_view
 class string_view
 {

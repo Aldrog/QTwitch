@@ -1,10 +1,8 @@
-CXX11COMPATIBILITY = $$(CXX11COMPATIBILITY)
-isEmpty( CXX11COMPATIBILITY ) : {
-    CONFIG += c++17
-} else: {
-    warning("Enabling C++11 compatibility mode")
-    CONFIG += c++11
+isEmpty( CXX_VERSION ) : {
+    CXX_VERSION = c++17
 }
+message("Setting $$CXX_VERSION standard version")
+CONFIG += $$CXX_VERSION
 
 VERSION = 0.1
 
