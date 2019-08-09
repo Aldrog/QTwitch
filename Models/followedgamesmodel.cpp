@@ -30,7 +30,9 @@ FollowedGamesModel::FollowedGamesModel(QObject *parent)
 
 void FollowedGamesModel::receiveData(const std::shared_ptr<QTwitch::Api::Response> &response)
 {
+    bool wasAvailable = nextAvailable();
     auto data = std::unique_ptr<Experimental::FollowedGamesList>(static_cast<Experimental::FollowedGamesList*>(response->object.release()));
+    updateTotal(data->total);
     beginInsertRows(QModelIndex(), storage.size(), storage.size() + data->follows.size() - 1);
     for (const auto &game : data->follows) {
         QString imgUrl = game.box.templateUrl;
@@ -40,5 +42,6 @@ void FollowedGamesModel::receiveData(const std::shared_ptr<QTwitch::Api::Respons
                               GamePayload(QString::number(game.id)) );
     }
     endInsertRows();
-    updateTotal(data->total);
+    if (nextAvailable() != wasAvailable)
+        emit nextAvailableChanged();
 }

@@ -29,14 +29,17 @@ UsersSearchModel::UsersSearchModel(QObject *parent)
 
 void UsersSearchModel::receiveData(const std::shared_ptr<Response> &response)
 {
+    bool wasAvailable = nextAvailable();
     auto data = std::unique_ptr<v5::ChannelsList>(static_cast<v5::ChannelsList*>(response->object.release()));
+    updateTotal(data->total);
     beginInsertRows(QModelIndex(), storage.size(), storage.size() + data->channels.size() - 1);
     for (const auto &channel : data->channels) {
         storage.emplace_back( EntitledImage(channel.logo, channel.displayName),
                               UserPayload(QString::number(channel.id)) );
     }
     endInsertRows();
-    updateTotal(data->total);
+    if (nextAvailable() != wasAvailable)
+        emit nextAvailableChanged();
 }
 
 QString UsersSearchModel::query() const

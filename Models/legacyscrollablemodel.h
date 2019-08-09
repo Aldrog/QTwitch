@@ -83,13 +83,9 @@ public:
 protected:
     std::shared_ptr<RequestType> request;
 
-    // Call this after resizing storage
     void updateTotal(int total)
     {
-        bool wasAvailable = nextAvailable();
         totalCount = total;
-        if (nextAvailable() != wasAvailable)
-            emit this->nextAvailableChanged();
     }
 
 private:
