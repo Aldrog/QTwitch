@@ -64,7 +64,7 @@ void Client::send(const std::shared_ptr<Request> &request)
     }
     assert(qrep);
 
-    connect(qrep, &QNetworkReply::readyRead, [this, qrep, request] ()
+    connect(qrep, &QNetworkReply::finished, [this, qrep, request] ()
     {
         auto data = qrep->readAll();
         qDebug() << data;
@@ -75,7 +75,7 @@ void Client::send(const std::shared_ptr<Request> &request)
         response->request = request;
         response->status = qrep->error();
         if (response->status != QNetworkReply::NoError)
-            qDebug() << "Error:" << qrep->errorString();
+            qInfo() << "Error:" << qrep->errorString();
 
         emit receive(response);
         emit request->responseReceived(response);

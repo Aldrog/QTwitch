@@ -38,6 +38,7 @@ public:
 
     enum class Status {
         Authorized,
+        InProgress,
         NotAuthorized,
         Invalid
     };

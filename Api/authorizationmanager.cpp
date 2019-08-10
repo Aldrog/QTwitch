@@ -32,7 +32,7 @@ AuthorizationManager::AuthorizationManager(QObject *parent)
 
 QNetworkRequest AuthorizationManager::authorize(const std::shared_ptr<Request> &request) const
 {
-    if (mStatus == Status::Authorized)
+    if (mStatus == Status::Authorized || mStatus == Status::InProgress)
         return request->getNetworkRequest(credentials.authToken);
     else
         return request->getNetworkRequest({});
@@ -40,7 +40,7 @@ QNetworkRequest AuthorizationManager::authorize(const std::shared_ptr<Request> &
 
 QByteArray AuthorizationManager::authorizePost(const std::shared_ptr<Request> &request) const
 {
-    if (mStatus == Status::Authorized)
+    if (mStatus == Status::Authorized || mStatus == Status::InProgress)
         return request->postData(credentials.authToken);
     else
         return request->postData({});
@@ -142,7 +142,7 @@ void AuthorizationManager::update(const QUrl &url)
 
     fragment.remove(0, keyLength);
     credentials.authToken = std::move(fragment);
-
+    setStatus(Status::InProgress);
     verify();
 }
 
@@ -173,8 +173,8 @@ void AuthorizationManager::verify()
         auto data = std::static_pointer_cast<ValidationData>(std::shared_ptr<Object>(move(responce->object)));
         credentials.userId = data->userId;
         credentialsStorage->writeCredentials(credentials);
-        emit completed();
         setStatus(Status::Authorized);
+        emit completed();
     });
     Client::get()->send(request);
 }
