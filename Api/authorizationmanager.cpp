@@ -56,10 +56,9 @@ void AuthorizationManager::setCredentialsStorage(std::unique_ptr<AbstractCredent
     }
 }
 
-QUrl AuthorizationManager::init(const std::vector<Scope> &scopes, bool force)
+QUrl AuthorizationManager::init(const QList<Scope> &scopes, bool force)
 {
     assert(credentialsStorage);
-    assert(!scopes.empty());
 
     QUrl url(QStringLiteral("https://id.twitch.tv/oauth2/authorize"));
     QUrlQuery query;
@@ -74,20 +73,36 @@ QUrl AuthorizationManager::init(const std::vector<Scope> &scopes, bool force)
                            QStringLiteral("true"));
 
     QString scopesParam;
+    qInfo() << "Scopes:";
     for (const auto &s : scopes) {
-        if(scopesParam.isNull())
+        qInfo() << s;
+        if (scopesParam.isNull())
             scopesParam = scopeToString(s);
         else
             scopesParam += QStringLiteral("+") + scopeToString(s);
     }
-    query.addQueryItem(QStringLiteral("scope"),
-                       scopesParam);
+    if (!scopesParam.isNull()) {
+        query.addQueryItem(QStringLiteral("scope"),
+                           scopesParam);
+    }
 
     authorizationStateParameter = generateRandomString(43, 128);
     query.addQueryItem(QStringLiteral("state"),
                        authorizationStateParameter);
     url.setQuery(query);
     return url;
+}
+
+QUrl AuthorizationManager::init(const QList<int> &scopes, bool force) {
+    QList<Scope> validScopes;
+    for (const auto &s : scopes) {
+        if (s < static_cast<int>(Scope::First) || s > static_cast<int>(Scope::Last)) {
+            qCritical() << "Invalid login scope " << s;
+            return {};
+        }
+        validScopes.push_back(static_cast<Scope>(s));
+    }
+    return init(validScopes, force);
 }
 
 void AuthorizationManager::update(const QUrl &url)

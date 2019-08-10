@@ -88,7 +88,10 @@ public:
         ChatEdit,
         ChatRead,
         WhispersRead,
-        WhispersEdit
+        WhispersEdit,
+
+        First = AnalyticsReadExtensions,
+        Last = WhispersEdit
     };
     Q_ENUM(Scope)
 
@@ -99,7 +102,8 @@ public:
     inline QString login() const { return credentials.login; }
     inline Status status() const { return mStatus; }
     void setCredentialsStorage(std::unique_ptr<AbstractCredentialsStorage> storage);
-    Q_INVOKABLE QUrl init(const std::vector<Scope> &scopes, bool force = false);
+    Q_INVOKABLE QUrl init(const QList<Scope> &scopes, bool force = false);
+    Q_INVOKABLE QUrl init(const QList<int> &scopes, bool force = false);
 
 signals:
     void completed();
