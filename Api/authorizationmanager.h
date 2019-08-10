@@ -36,59 +36,69 @@ class QTWITCHSHARED_EXPORT AuthorizationManager : public QObject
 public:
     explicit AuthorizationManager(QObject *parent = nullptr);
 
-    enum class Status
-    {
+    enum class Status {
         Authorized,
         NotAuthorized,
         Invalid
     };
     Q_ENUM(Status)
 
-    enum class Error
-    {
+    enum class Error {
         VerificationFailed = 1,
         InvalidRedirectUrl,
         StateMismatch
     };
     Q_ENUM(Error)
 
-    enum class Scope
-    {
+    enum class Scope {
         // New API
-        AnalyticsReadExtensions,
-        AnalyticsReadGames,
-        BitsRead,
-        ClipsEdit,
-        UserEdit,
-        UserEditBroadcast,
-        UserReadBroadcast,
-        UserReadEmail,
+        AnalyticsReadExtensions,  /* View analytics data for your extensions. */
+        AnalyticsReadGames,       /* View analytics data for your games. */
+        BitsRead,                 /* View Bits information for your channel. */
+        ChannelReadSubscriptions, /* Get a list of all subscribers to your channel
+                                     and check if a user is subscribed to your
+                                     channel. */
+        ClipsEdit,                /* Manage a clip object. */
+        UserEdit,                 /* Manage a user object. */
+        UserEditBroadcast,        /* Edit your channel’s broadcast configuration,
+                                     including extension configuration. (This scope
+                                     implies UserReadBroadcast capability.) */
+        UserReadBroadcast,        /* View your broadcasting configuration, including
+                                     extension configurations. */
+        UserReadEmail,            /* Read authorized user’s email address. */
 
         // API v5
-        ChannelCheckSubscription,
-        ChannelCommercial,
-        ChannelEditor,
-        ChannelFeedEdit,
-        ChannelFeedRead,
-        ChannelRead,
-        ChannelStream,
-        ChannelSubscriptions,
-        CollectionsEdit,
-        CommunitiesEdit,
-        OpenId,
-        UserBlocksEdit,
-        UserBlocksRead,
-        UserFollowsEdit,
-        UserRead,
-        UserSubscriptions,
-        ViewingActivityRead,
+        ChannelCheckSubscription, /* Read whether a user is subscribed to your
+                                     channel. */
+        ChannelCommercial,        /* Trigger commercials on channel. */
+        ChannelEditor,            /* Write channel metadata (game, status, etc). */
+        ChannelFeedEdit,          /* Add posts and reactions to a channel feed. */
+        ChannelFeedRead,          /* View a channel feed. */
+        ChannelRead,              /* Read nonpublic channel information, including email
+                                     address and stream key. */
+        ChannelStream,            /* Reset a channel’s stream key. */
+        ChannelSubscriptions,     /* Read all subscribers to your channel. */
+        CollectionsEdit,          /* Manage a user’s collections (of videos). */
+        CommunitiesEdit,          /* Manage a user’s communities. */
+        CommunitiesModerate,      /* Manage community moderators. */
+        OpenId,                   /* Use OpenID Connect authentication. */
+        UserBlocksEdit,           /* Turn on/off ignoring a user. Ignoring users means you
+                                     cannot see them type, receive messages from them, etc. */
+        UserBlocksRead,           /* Read a user’s list of ignored users. */
+        UserFollowsEdit,          /* Manage a user’s followed channels. */
+        UserRead,                 /* Read nonpublic user information, like email address. */
+        UserSubscriptions,        /* Read a user’s subscriptions. */
+        ViewingActivityRead,      /* Turn on Viewer Heartbeat Service ability to record
+                                     user data. */
 
         // Chat
-        ChannelModerate,
-        ChatEdit,
-        ChatRead,
-        WhispersRead,
-        WhispersEdit,
+        ChannelModerate, /* Perform moderation actions in a channel. The user
+                            requesting the scope must be a moderator in the
+                            channel. */
+        ChatEdit,        /* Send live stream chat and rooms messages. */
+        ChatRead,        /* View live stream chat and rooms messages. */
+        WhispersRead,    /* View your whisper messages. */
+        WhispersEdit,    /* Send whisper messages. */
 
         First = AnalyticsReadExtensions,
         Last = WhispersEdit

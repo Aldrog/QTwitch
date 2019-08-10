@@ -223,6 +223,8 @@ QString AuthorizationManager::scopeToString(Scope scope)
         return QStringLiteral("analytics:read:games");
     case Scope::BitsRead:
         return QStringLiteral("bits:read");
+    case Scope::ChannelReadSubscriptions:
+        return QStringLiteral("channel:read:subscriptions");
     case Scope::ClipsEdit:
         return QStringLiteral("clips:edit");
     case Scope::UserEdit:
@@ -255,6 +257,8 @@ QString AuthorizationManager::scopeToString(Scope scope)
         return QStringLiteral("collections_edit");
     case Scope::CommunitiesEdit:
         return QStringLiteral("communities_edit");
+    case Scope::CommunitiesModerate:
+        return QStringLiteral("communities_moderate");
     case Scope::OpenId:
         return QStringLiteral("openid");
     case Scope::UserBlocksEdit:
