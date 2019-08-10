@@ -3,6 +3,7 @@
 
 #include "qtwitch_global.h"
 #include <QObject>
+#include <Api/Helix/endpoints.h>
 
 namespace QTwitch {
 namespace Models {
@@ -32,7 +33,13 @@ signals:
     void selfChanged(bool self);
     void displayChanged(const QString &display);
 
+private slots:
+    void receiveData(const std::shared_ptr<Api::Response> &response);
+    void refresh();
+
 private:
+    std::shared_ptr<Api::Helix::UsersRequest> request;
+
     QString mUserId;
     QString mLogin;
     QString mDisplay;

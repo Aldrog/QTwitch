@@ -6,8 +6,10 @@ using namespace QTwitch::Models;
 using namespace QTwitch::Api;
 
 UserInfo::UserInfo(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),
+      request(std::make_shared<Helix::UsersRequest>())
 {
+    connect(request.get(), &Request::responseReceived, this, &UserInfo::receiveData);
 }
 
 void UserInfo::setUserId(const QString &newUserId)
@@ -16,21 +18,13 @@ void UserInfo::setUserId(const QString &newUserId)
         return;
     mUserId = newUserId;
     emit userIdChanged(mUserId);
+    if (mUserId.isEmpty()) {
+        request->id.clear();
+        return;
+    }
 
-    auto request = std::make_shared<Helix::UsersRequest>();
-    request->id = {newUserId};
-    connect(request.get(), &Request::responseReceived,
-            [this, request] (const std::shared_ptr<Response> &response)
-    {
-        auto data = std::unique_ptr<Helix::UsersList>(static_cast<Helix::UsersList*>(response->object.release()));
-        if (!data->data.empty()) {
-            mLogin = data->data.front().login;
-            emit loginChanged(mLogin);
-            mDisplay = data->data.front().displayName;
-            emit displayChanged(mDisplay);
-        }
-    });
-    Client::get()->send(request);
+    request->id = {mUserId};
+    refresh();
 }
 
 void UserInfo::setLogin(const QString &newLogin)
@@ -39,21 +33,13 @@ void UserInfo::setLogin(const QString &newLogin)
         return;
     mLogin = newLogin;
     emit loginChanged(mLogin);
+    if (mLogin.isEmpty()) {
+        request->login.clear();
+        return;
+    }
 
-    auto request = std::make_shared<Helix::UsersRequest>();
-    request->login = {newLogin};
-    connect(request.get(), &Request::responseReceived,
-            [this, request] (const std::shared_ptr<Response> &response)
-    {
-        auto data = std::unique_ptr<Helix::UsersList>(static_cast<Helix::UsersList*>(response->object.release()));
-        if (!data->data.empty()) {
-            mUserId = data->data.front().id;
-            emit userIdChanged(mUserId);
-            mDisplay = data->data.front().displayName;
-            emit displayChanged(mDisplay);
-        }
-    });
-    Client::get()->send(request);
+    request->login = {mLogin};
+    refresh();
 }
 
 void UserInfo::setSelf(bool newSelf)
@@ -62,22 +48,45 @@ void UserInfo::setSelf(bool newSelf)
         return;
     mSelf = newSelf;
     emit selfChanged(mSelf);
-    if (!mSelf)
+    if (!mSelf) {
+        this->disconnect(Client::get()->authorization());
         return;
+    }
 
-    auto request = std::make_shared<Helix::UsersRequest>();
-    connect(request.get(), &Request::responseReceived,
-            [this, request] (const std::shared_ptr<Response> &response)
-    {
-        auto data = std::unique_ptr<Helix::UsersList>(static_cast<Helix::UsersList*>(response->object.release()));
-        if (!data->data.empty()) {
-            mUserId = data->data.front().id;
+    connect(Client::get()->authorization(), &AuthorizationManager::statusChanged,
+            this, &UserInfo::refresh);
+    refresh();
+}
+
+void UserInfo::receiveData(const std::shared_ptr<Response> &response)
+{
+    auto data = std::unique_ptr<Helix::UsersList>(static_cast<Helix::UsersList*>(response->object.release()));
+    if (!data->data.empty()) {
+        const auto userId = data->data.front().id;
+        if (userId != mUserId) {
+            mUserId = userId;
             emit userIdChanged(mUserId);
-            mLogin = data->data.front().login;
+        }
+        const auto login = data->data.front().login;
+        if (login != mLogin) {
+            mLogin = login;
             emit loginChanged(mLogin);
-            mDisplay = data->data.front().displayName;
+        }
+        const auto display = data->data.front().displayName;
+        if (display != mDisplay) {
+            mDisplay = display;
             emit displayChanged(mDisplay);
         }
-    });
-    Client::get()->send(request);
+    }
+}
+
+void UserInfo::refresh()
+{
+    const auto client = Client::get();
+    if (request->login.empty()
+        && request->id.empty()
+        && client->authorization()->status() != AuthorizationManager::Status::Authorized) {
+        return;
+    }
+    client->send(request);
 }
