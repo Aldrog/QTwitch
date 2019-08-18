@@ -172,6 +172,7 @@ void AuthorizationManager::verify()
         }
         auto data = std::static_pointer_cast<ValidationData>(std::shared_ptr<Object>(move(responce->object)));
         credentials.userId = data->userId;
+        credentials.login = data->login;
         credentialsStorage->writeCredentials(credentials);
         setStatus(Status::Authorized);
         emit completed();
