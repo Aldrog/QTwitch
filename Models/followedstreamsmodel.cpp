@@ -25,6 +25,7 @@ using namespace QTwitch::Api;
 FollowedStreamsModel::FollowedStreamsModel(QObject *parent)
     : LegacyScrollableModel(parent)
 {
+    request->streamType = "live";
 }
 
 void FollowedStreamsModel::receiveData(const std::shared_ptr<Response> &response)
