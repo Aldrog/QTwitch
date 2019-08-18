@@ -34,7 +34,8 @@ void FollowedGamesModel::receiveData(const std::shared_ptr<QTwitch::Api::Respons
     auto data = std::unique_ptr<Experimental::FollowedGamesList>(static_cast<Experimental::FollowedGamesList*>(response->object.release()));
     updateTotal(data->total);
     beginInsertRows(QModelIndex(), storage.size(), storage.size() + data->follows.size() - 1);
-    for (const auto &game : data->follows) {
+    for (const auto &gameData : data->follows) {
+        const auto &game = gameData.game;
         QString imgUrl = game.box.templateUrl;
         imgUrl.replace(QStringLiteral("{width}"), QString::number(imageWidth));
         imgUrl.replace(QStringLiteral("{height}"), QString::number(imageHeight()));

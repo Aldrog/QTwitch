@@ -27,11 +27,27 @@ namespace QTwitch {
 namespace Api {
 namespace Experimental {
 
+class QTWITCHSHARED_EXPORT GameData : public Object
+{
+public:
+    int viewers;
+    int channels;
+    v5::GameData game;
+
+    template<class T>
+    void accept(const T &visitor)
+    {
+        visitor.visit(viewers, "viewers");
+        visitor.visit(channels, "channels");
+        visitor.visit(game, "game");
+    }
+};
+
 class QTWITCHSHARED_EXPORT FollowedGamesList : public Object
 {
 public:
     int total;
-    std::vector<v5::GameData> follows;
+    std::vector<GameData> follows;
 
     template<class T>
     void accept(const T &visitor)
